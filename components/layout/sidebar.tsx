@@ -443,44 +443,19 @@ export function Sidebar() {
                 {/* Submenu Accordion matching Figma (Expanded Sidebar) */}
                 {sidebarOpen && item.hasSubmenu && itemSubmenuOpen && item.subItems && (
                   <div className="mt-1 pl-4 pr-1 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
-                    {item.subItems.map((sub) => {
-                      const isSubActive =
-                        sub.href.includes("?tab=")
-                          ? pathname === "/users" &&
-                            currentTab ===
-                              (sub.href.includes("tab=sender")
-                                ? "sender"
-                                : sub.href.includes("tab=courier")
-                                ? "courier"
-                                : "all")
-                          : pathname === sub.href;
-
-                      return (
-                        <Link
-                          key={`${item.title}-${sub.title}`}
-                          href={sub.href}
-                          className={cn(
-                            "flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors font-body group/sub",
-                            isSubActive
-                              ? "bg-[#D2E7DC]/60 text-[#014D21] font-semibold"
-                              : "text-[#5A5A52] hover:bg-black/5 hover:text-[#171713]"
-                          )}
-                        >
-                          {/* Circular icon badge matching Figma screenshot */}
-                          <div
-                            className={cn(
-                              "w-6 h-6 rounded-full shrink-0 transition-colors flex items-center justify-center",
-                              isSubActive
-                                ? "bg-[#014D21] text-white"
-                                : "bg-[#EAEAE5] group-hover/sub:bg-[#E3E3DC]"
-                            )}
-                          />
-                          <span className="text-[13px] font-normal truncate">
-                            {sub.title}
-                          </span>
-                        </Link>
-                      );
-                    })}
+                    {item.subItems.map((sub) => (
+                      <Link
+                        key={`${item.title}-${sub.title}`}
+                        href={sub.href}
+                        className="flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors font-body group/sub text-[#5A5A52] hover:bg-black/5 hover:text-[#171713]"
+                      >
+                        {/* Circular icon badge matching Figma screenshot */}
+                        <div className="w-6 h-6 rounded-full shrink-0 transition-colors flex items-center justify-center bg-[#EAEAE5] group-hover/sub:bg-[#E3E3DC]" />
+                        <span className="text-[13px] font-normal truncate">
+                          {sub.title}
+                        </span>
+                      </Link>
+                    ))}
                   </div>
                 )}
 
@@ -496,12 +471,7 @@ export function Sidebar() {
                           <Link
                             key={`collapsed-${item.title}-${sub.title}`}
                             href={sub.href}
-                            className={cn(
-                              "text-left py-0.5 hover:text-[#DC851F] transition-colors",
-                              pathname === sub.href
-                                ? "text-[#DC851F] font-medium"
-                                : "text-white/70"
-                            )}
+                            className="text-left py-0.5 text-white/70 hover:text-[#DC851F] transition-colors"
                           >
                             {sub.title}
                           </Link>
@@ -596,33 +566,18 @@ export function Sidebar() {
                 {/* Settings Submenu Accordion matching Figma */}
                 {sidebarOpen && isSettingsOpen && (
                   <div className="mt-1 pl-4 pr-1 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
-                    {settingsSubItems.map((sub) => {
-                      const isSubActive = pathname === sub.href;
-                      return (
-                        <Link
-                          key={`settings-${sub.title}`}
-                          href={sub.href}
-                          className={cn(
-                            "flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors font-body group/sub",
-                            isSubActive
-                              ? "bg-[#D2E7DC]/60 text-[#014D21] font-semibold"
-                              : "text-[#5A5A52] hover:bg-black/5 hover:text-[#171713]"
-                          )}
-                        >
-                          <div
-                            className={cn(
-                              "w-6 h-6 rounded-full shrink-0 transition-colors flex items-center justify-center",
-                              isSubActive
-                                ? "bg-[#014D21] text-white"
-                                : "bg-[#EAEAE5] group-hover/sub:bg-[#E3E3DC]"
-                            )}
-                          />
-                          <span className="text-[13px] font-normal truncate">
-                            {sub.title}
-                          </span>
-                        </Link>
-                      );
-                    })}
+                    {settingsSubItems.map((sub) => (
+                      <Link
+                        key={`settings-${sub.title}`}
+                        href={sub.href}
+                        className="flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors font-body group/sub text-[#5A5A52] hover:bg-black/5 hover:text-[#171713]"
+                      >
+                        <div className="w-6 h-6 rounded-full shrink-0 transition-colors flex items-center justify-center bg-[#EAEAE5] group-hover/sub:bg-[#E3E3DC]" />
+                        <span className="text-[13px] font-normal truncate">
+                          {sub.title}
+                        </span>
+                      </Link>
+                    ))}
                   </div>
                 )}
 
@@ -637,12 +592,7 @@ export function Sidebar() {
                         <Link
                           key={`collapsed-settings-${sub.title}`}
                           href={sub.href}
-                          className={cn(
-                            "text-left py-0.5 hover:text-[#DC851F] transition-colors",
-                            pathname === sub.href
-                              ? "text-[#DC851F] font-medium"
-                              : "text-white/70"
-                          )}
+                          className="text-left py-0.5 text-white/70 hover:text-[#DC851F] transition-colors"
                         >
                           {sub.title}
                         </Link>
