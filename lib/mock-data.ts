@@ -151,9 +151,9 @@ export const userGrowthData = [
 
 // Delivery Status Donut Data
 export const deliveryStatusData = [
-  { name: "Picked Up", value: 44584, color: "#F59E0B", percentage: "52.84%" },
-  { name: "Delivered", value: 22187, color: "#10B981", percentage: "26.27%" },
-  { name: "In transit", value: 11191, color: "#111827", percentage: "13.26%" },
-  { name: "Pending", value: 5663, color: "#F97316", percentage: "6.71%" },
-  { name: "Cancelled", value: 1449, color: "#EF4444", percentage: "1.72%" },
+  { name: "Picked Up", value: 44584, color: "#DC851F", percentage: "52.84%" },
+  { name: "Delivered", value: 22187, color: "#16A34A", percentage: "26.27%" },
+  { name: "In transit", value: 11191, color: "#014D21", percentage: "13.26%" },
+  { name: "Pending", value: 5663, color: "#D97706", percentage: "6.71%" },
+  { name: "Cancelled", value: 1449, color: "#C83B2B", percentage: "1.72%" },
 ];

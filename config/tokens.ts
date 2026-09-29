@@ -1,0 +1,115 @@
+/**
+ * Figma Design System Tokens
+ * Exported directly from Figma Variables
+ */
+
+export const FIGMA_TOKENS = {
+  color: {
+    foundation: {
+      white: "#FFFFFF",
+      black: "#11110F",
+    },
+    primary: {
+      subtleBackgrounds: "#E6F1EB",
+      selectedBackgrounds: "#CDE3D6",
+      bordersSoftAccents: "#9BC7AD",
+      secondaryGraphics: "#69AA84",
+      lighterInteractive: "#378E5B",
+      brand: "#014D21",
+      hover: "#01451E",
+      pressed: "#013A19",
+      darkEmphasis: "#013014",
+      veryDarkSurfaces: "#01250F",
+      deepestGreen: "#001A0B",
+    },
+    secondary: {
+      subtleAccentBackgrounds: "#FFF4E5",
+      selectedHighlightedSurfaces: "#FCE8CC",
+      softBorders: "#F8D19A",
+      illustrations: "#F3B867",
+      secondaryEmphasis: "#E99E3D",
+      brandAccent: "#DC851F",
+      hover: "#C6771B",
+      pressed: "#A86517",
+      darkAccent: "#875012",
+      deepAccent: "#673C0E",
+      deepestOrange: "#472809",
+    },
+    neutral: {
+      pureWhite: "#FFFFFF",
+      subtleBackgrounds: "#FCFCFA",
+      appBackground: "#F7F7F3",
+      secondarySurfaces: "#F0F0EB",
+      dividers: "#E3E3DC",
+      strongBorders: "#C9C9C0",
+      placeholder: "#A7A79D",
+      secondaryText: "#85857B",
+      supportingText: "#66665D",
+      strongSecondaryText: "#484840",
+      headingText: "#292923",
+      primaryText: "#171713",
+      maximumContrast: "#0D0D0A",
+      pageTitleBorder: "#D6D8DB",
+      borderColor: "#EBEBE4",
+    },
+    semantic: {
+      warning: {
+        100: "#FFF8E7",
+        200: "#FDECC8",
+        300: "#D97706",
+        400: "#B45309",
+        500: "#92400E",
+      },
+      success: {
+        100: "#ECFDF3",
+        200: "#D1FAE0",
+        300: "#16A34A",
+        400: "#15803D",
+        500: "#166534",
+      },
+      error: {
+        100: "#FEF2F0",
+        200: "#FDE0DB",
+        300: "#C83B2B",
+        400: "#B42318",
+        500: "#912018",
+      },
+      information: {
+        100: "#EFF6FA",
+        200: "#DCECF3",
+        300: "#277A9E",
+        400: "#21647F",
+        500: "#194E63",
+      },
+    },
+  },
+  gradient: {
+    linear: "linear-gradient(90deg, #DC851F 0%, #014D21 100%)",
+    darkLinear: "linear-gradient(341deg, #472809 0%, #001A0B 100%)",
+  },
+  shadow: {
+    default: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+    soft: "0px 0px 21.4px 0px #C9C9C0",
+  },
+  typography: {
+    fontFamily: {
+      primary: "Sora",
+      secondary: "Plus Jakarta Sans",
+    },
+    styles: {
+      h1: { fontFamily: "Sora", fontSize: "32px", fontWeight: 700, lineHeight: "32px", letterSpacing: "-1.28px" },
+      h2: { fontFamily: "Sora", fontSize: "24px", fontWeight: 600, lineHeight: "24px", letterSpacing: "-0.96px" },
+      h3: { fontFamily: "Sora", fontSize: "20px", fontWeight: 600, lineHeight: "20px", letterSpacing: "-0.8px" },
+      h4: { fontFamily: "Sora", fontSize: "18px", fontWeight: 600, lineHeight: "18px", letterSpacing: "-0.72px" },
+      h5: { fontFamily: "Sora", fontSize: "16px", fontWeight: 400, lineHeight: "16px", letterSpacing: "-0.16px" },
+      h6: { fontFamily: "Sora", fontSize: "12px", fontWeight: 400, lineHeight: "16px", letterSpacing: "-0.12px" },
+      body: { fontFamily: "Plus Jakarta Sans", fontSize: "16px", fontWeight: 400, lineHeight: "18px", letterSpacing: "0px" },
+      bodySm: { fontFamily: "Plus Jakarta Sans", fontSize: "14px", fontWeight: 400, lineHeight: "16px", letterSpacing: "0px" },
+      bodyLg: { fontFamily: "Plus Jakarta Sans", fontSize: "20px", fontWeight: 400, lineHeight: "24px", letterSpacing: "0px" },
+      caption: { fontFamily: "Plus Jakarta Sans", fontSize: "12px", fontWeight: 400, lineHeight: "14px", letterSpacing: "0px" },
+      buttonLabel16: { fontFamily: "Sora", fontSize: "16px", fontWeight: 600, lineHeight: "19.2px", letterSpacing: "0px" },
+      buttonLabel14: { fontFamily: "Sora", fontSize: "14px", fontWeight: 600, lineHeight: "16.8px", letterSpacing: "0px" },
+      h14: { fontFamily: "Plus Jakarta Sans", fontSize: "14px", fontWeight: 600, lineHeight: "16.8px", letterSpacing: "0px" },
+    },
+  },
+} as const;

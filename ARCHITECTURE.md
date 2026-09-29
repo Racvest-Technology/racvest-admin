@@ -134,7 +134,7 @@ racvest-admin/
 | **Framework** | Next.js 16.3+ (App Router) | High-performance React framework with native Server Components, streaming SSR, built-in bundling optimizations, and robust API route handling. |
 | **UI Library** | React 19 | Latest concurrent rendering features, native Actions support, optimized hooks, and fluid state transitions. |
 | **Component Primitives** | shadcn/ui | Accessible, unstyled Radix primitives styled with Tailwind CSS v4 tokens, allowing full source code control and custom Racvest branding. |
-| **Styling** | Tailwind CSS v4 | CSS-first configuration, ultra-fast compilation via Lightning CSS, custom Forest Green (`#0A3323`) palette and semantic alert tokens. |
+| **Styling** | Tailwind CSS v4 | CSS-first configuration, ultra-fast compilation via Lightning CSS, custom Forest Green (`#014D21`) palette, Brand Accent Gold (`#DC851F`), and Figma semantic alert tokens. |
 | **Data Grid** | TanStack Table v8 | High-performance headless table engine powering the "Live Deliveries" grid with server-side pagination, multi-column filtering, and sorting. |
 | **Data Visualizations** | Recharts (via shadcn/ui Charts) | Selected over Tremor due to seamless React 19 & Tailwind v4 support, granular custom tooltips, spline curves, and custom center-label donut charts. |
 | **URL State Sync** | Nuqs | Type-safe URL search params adapter for Next.js App Router, enabling shareable and bookmarkable table filters, pagination, and date ranges. |
@@ -142,6 +142,7 @@ racvest-admin/
 | **State Management**| Zustand + TanStack Query | Zustand for lightweight client state (map bounds, selected pins, UI drawers); TanStack Query for server data caching, polling, and optimistic updates. |
 | **Mapping Engine** | Mapbox GL JS / Deck.gl | WebGL-accelerated rendering capable of rendering thousands of concurrent moving vehicle pins with zero frame drops. |
 | **Form & Validation**| React Hook Form + Zod | Minimal re-renders, accessible input states, and runtime schema validation for both client forms and server actions. |
+| **Typography** | Sora (Primary) & Plus Jakarta Sans (Secondary) | Loaded via `next/font/google` for optimal CLS-free geometric display and high-readability body copy. |
 | **Icons & Media** | Lucide React | Clean, tree-shakeable SVG icon library matching the Figma dashboard glyphs. |
 
 ---

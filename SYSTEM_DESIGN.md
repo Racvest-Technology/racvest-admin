@@ -98,7 +98,7 @@ Given the sensitivity of logistics data (customer home addresses, high-value car
 
 ### 3.1 Bundle & Asset Optimization
 - Map engine code (Mapbox/Leaflet) is dynamically imported (`next/dynamic` with `ssr: false`) to avoid server-side bundling overhead and reduce initial page JavaScript payloads.
-- Font optimization using `next/font` for Geist and Inter.
+- Font optimization using `next/font` for Sora (primary) and Plus Jakarta Sans (secondary).
 - Real-time table virtualization (TanStack Table + Virtual) to render lists of 10,000+ orders without DOM thrashing.
 
 ### 3.2 Fault Tolerance & Circuit Breaking

@@ -38,11 +38,11 @@ export default function LoginPage() {
         {/* Subtle Brand Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-between p-12">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-[#0A3323] flex items-center justify-center text-amber-400 font-extrabold text-xl shadow-md border border-emerald-600/40">
+            <div className="w-10 h-10 rounded-xl bg-[#014D21] flex items-center justify-center text-[#DC851F] font-extrabold text-xl shadow-md border border-[#9BC7AD]/40">
               R
             </div>
-            <span className="font-extrabold text-2xl tracking-tight text-white">
-              RAC<span className="text-emerald-400">VEST</span>
+            <span className="font-extrabold text-2xl tracking-tight text-white font-primary">
+              RAC<span className="text-[#DC851F]">VEST</span>
             </span>
           </div>
 
@@ -85,7 +85,7 @@ export default function LoginPage() {
                   placeholder="Enter your email or username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-11 px-3 text-sm text-gray-900 border-gray-200 focus-visible:ring-[#0A3323]"
+                  className="h-11 px-3 text-sm text-[#171713] border-[#E3E3DC] focus-visible:ring-[#014D21]"
                   required
                 />
               </div>
@@ -95,7 +95,7 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <label
                 htmlFor="password"
-                className="block text-xs font-semibold text-gray-700 tracking-wide"
+                className="block text-xs font-semibold text-[#66665D] tracking-wide"
               >
                 Password
               </label>
@@ -106,13 +106,13 @@ export default function LoginPage() {
                   placeholder="Enter Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-11 px-3 pr-10 text-sm text-gray-900 border-gray-200 focus-visible:ring-[#0A3323]"
+                  className="h-11 px-3 pr-10 text-sm text-[#171713] border-[#E3E3DC] focus-visible:ring-[#014D21]"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#85857B] hover:text-[#171713] transition-colors p-1"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -128,7 +128,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-11 bg-[#0A3323] hover:bg-[#0E4430] text-white font-semibold rounded-lg shadow-sm transition-all text-sm mt-2"
+              className="w-full h-11 bg-[#014D21] hover:bg-[#01451E] text-white font-semibold rounded-lg shadow-sm transition-all text-sm mt-2"
             >
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
@@ -137,7 +137,7 @@ export default function LoginPage() {
             <div className="text-center pt-2">
               <Link
                 href="/forgot-password"
-                className="text-xs text-gray-500 hover:text-[#0A3323] transition-colors"
+                className="text-xs text-[#66665D] hover:text-[#014D21] transition-colors"
               >
                 Lost your password?
               </Link>

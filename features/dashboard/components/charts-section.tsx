@@ -44,19 +44,19 @@ export function ChartsSection() {
               <AreaChart data={revenueChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#014D21" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#014D21" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis
                   dataKey="day"
-                  stroke="#9CA3AF"
+                  stroke="#85857B"
                   fontSize={12}
                   tickLine={false}
-                  axisLine={{ stroke: "#F3F4F6" }}
+                  axisLine={{ stroke: "#E3E3DC" }}
                 />
                 <YAxis
-                  stroke="#9CA3AF"
+                  stroke="#85857B"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
@@ -66,7 +66,7 @@ export function ChartsSection() {
                   contentStyle={{
                     backgroundColor: "#FFFFFF",
                     borderRadius: "8px",
-                    border: "1px solid #E5E7EB",
+                    border: "1px solid #E3E3DC",
                     boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     fontSize: "12px",
                   }}
@@ -78,7 +78,7 @@ export function ChartsSection() {
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="#10B981"
+                  stroke="#014D21"
                   strokeWidth={2.5}
                   fillOpacity={1}
                   fill="url(#revenueGradient)"
@@ -89,14 +89,14 @@ export function ChartsSection() {
         </div>
 
         {/* Delivery Analytics */}
-        <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-xs flex flex-col justify-between">
+        <div className="bg-white border border-[#E3E3DC] rounded-xl p-6 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 text-base">
+            <h3 className="font-semibold text-[#171713] text-base font-primary">
               Delivery Analytics
             </h3>
-            <button className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+            <button className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#66665D] bg-[#F7F7F3] border border-[#E3E3DC] rounded-lg hover:bg-[#F0F0EB] transition-colors">
               <span>7 Days</span>
-              <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#85857B]" />
             </button>
           </div>
 
@@ -105,19 +105,19 @@ export function ChartsSection() {
               <AreaChart data={deliveryChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="deliveryGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#DC851F" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#DC851F" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis
                   dataKey="day"
-                  stroke="#9CA3AF"
+                  stroke="#85857B"
                   fontSize={12}
                   tickLine={false}
-                  axisLine={{ stroke: "#F3F4F6" }}
+                  axisLine={{ stroke: "#E3E3DC" }}
                 />
                 <YAxis
-                  stroke="#9CA3AF"
+                  stroke="#85857B"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
@@ -127,7 +127,7 @@ export function ChartsSection() {
                   contentStyle={{
                     backgroundColor: "#FFFFFF",
                     borderRadius: "8px",
-                    border: "1px solid #E5E7EB",
+                    border: "1px solid #E3E3DC",
                     boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     fontSize: "12px",
                   }}
@@ -139,7 +139,7 @@ export function ChartsSection() {
                 <Area
                   type="monotone"
                   dataKey="deliveries"
-                  stroke="#F59E0B"
+                  stroke="#DC851F"
                   strokeWidth={2.5}
                   fillOpacity={1}
                   fill="url(#deliveryGradient)"
@@ -153,12 +153,12 @@ export function ChartsSection() {
       {/* Row 2: User Growth & Delivery Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* User Growth */}
-        <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-xs flex flex-col justify-between">
+        <div className="bg-white border border-[#E3E3DC] rounded-xl p-6 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-gray-900 text-base">User Growth</h3>
-            <button className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+            <h3 className="font-semibold text-[#171713] text-base font-primary">User Growth</h3>
+            <button className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-[#66665D] bg-[#F7F7F3] border border-[#E3E3DC] rounded-lg hover:bg-[#F0F0EB] transition-colors">
               <span>2026</span>
-              <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#85857B]" />
             </button>
           </div>
 
@@ -167,13 +167,13 @@ export function ChartsSection() {
               <BarChart data={userGrowthData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <XAxis
                   dataKey="month"
-                  stroke="#9CA3AF"
+                  stroke="#85857B"
                   fontSize={11}
                   tickLine={false}
-                  axisLine={{ stroke: "#F3F4F6" }}
+                  axisLine={{ stroke: "#E3E3DC" }}
                 />
                 <YAxis
-                  stroke="#9CA3AF"
+                  stroke="#85857B"
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
@@ -182,7 +182,7 @@ export function ChartsSection() {
                   contentStyle={{
                     backgroundColor: "#FFFFFF",
                     borderRadius: "8px",
-                    border: "1px solid #E5E7EB",
+                    border: "1px solid #E3E3DC",
                     fontSize: "12px",
                   }}
                   formatter={(val: number | string | readonly (number | string)[] | undefined) => [
@@ -192,7 +192,7 @@ export function ChartsSection() {
                 />
                 <Bar
                   dataKey="users"
-                  fill="#0A3323"
+                  fill="#014D21"
                   radius={[4, 4, 0, 0]}
                   barSize={18}
                 />

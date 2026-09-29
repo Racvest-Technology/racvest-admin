@@ -8,21 +8,21 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[#0A3323] text-white hover:bg-[#0E4430]",
+          "bg-[#014D21] text-white hover:bg-[#01451E]",
         secondary:
-          "bg-gray-100 text-gray-800 hover:bg-gray-200",
+          "bg-[#F0F0EB] text-[#171713] hover:bg-[#E3E3DC]",
         delivered:
-          "bg-[#E8F7EE] text-[#0F7638] font-medium border border-[#C5ECD4]",
+          "bg-[#ECFDF3] text-[#15803D] font-medium border border-[#D1FAE0]",
         inTransit:
-          "bg-[#E6F0EB] text-[#0A3323] font-medium border border-[#C2DCCE]",
+          "bg-[#E6F1EB] text-[#014D21] font-medium border border-[#9BC7AD]",
         pending:
-          "bg-[#FFF7ED] text-[#C2410C] font-medium border border-[#FFEDD5]",
+          "bg-[#FFF8E7] text-[#B45309] font-medium border border-[#FDECC8]",
         pickedUp:
-          "bg-[#FEF3C7] text-[#B45309] font-medium border border-[#FDE68A]",
+          "bg-[#FFF4E5] text-[#DC851F] font-medium border border-[#F8D19A]",
         cancelled:
-          "bg-[#FEE2E2] text-[#B91C1C] font-medium border border-[#FECACA]",
+          "bg-[#FEF2F0] text-[#B42318] font-medium border border-[#FDE0DB]",
         outline:
-          "text-gray-700 border border-gray-200",
+          "text-[#171713] border border-[#E3E3DC]",
       },
     },
     defaultVariants: {

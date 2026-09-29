@@ -48,15 +48,15 @@ export function Sidebar() {
   return (
     <aside className="w-64 min-w-64 shrink-0 bg-white border-r border-gray-100 flex flex-col h-screen sticky top-0 select-none">
       {/* Brand Header */}
-      <div className="h-16 px-6 flex items-center gap-3 border-b border-gray-100">
-        <div className="w-8 h-8 rounded-lg bg-[#0A3323] flex items-center justify-center text-amber-400 font-bold text-lg shadow-xs">
+      <div className="h-16 px-6 flex items-center gap-3 border-b border-[#E3E3DC]">
+        <div className="w-8 h-8 rounded-lg bg-[#014D21] flex items-center justify-center text-[#DC851F] font-bold text-lg shadow-xs">
           R
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="font-extrabold text-xl tracking-tight text-gray-900 font-sans">
-            RAC<span className="text-[#0A3323]">VEST</span>
+          <span className="font-extrabold text-xl tracking-tight text-[#171713] font-primary">
+            RAC<span className="text-[#014D21]">VEST</span>
           </span>
-          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span className="w-2 h-2 rounded-full bg-[#16A34A]"></span>
         </div>
       </div>
 
@@ -76,8 +76,8 @@ export function Sidebar() {
               className={cn(
                 "group flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                 isActive
-                  ? "bg-[#0A3323] text-white shadow-xs"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "bg-[#014D21] text-white shadow-xs"
+                  : "text-[#66665D] hover:text-[#171713] hover:bg-[#F0F0EB]"
               )}
             >
               <div className="flex items-center gap-3">

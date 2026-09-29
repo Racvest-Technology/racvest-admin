@@ -108,10 +108,10 @@ export function LiveDeliveriesTable() {
           const rider = row.original.assignedTo;
           return (
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-emerald-100 text-[#0A3323] text-[10px] font-bold flex items-center justify-center border border-emerald-200">
+              <div className="w-6 h-6 rounded-full bg-[#E6F1EB] text-[#014D21] text-[10px] font-bold flex items-center justify-center border border-[#9BC7AD]">
                 {rider.initials}
               </div>
-              <span className="text-xs font-medium text-gray-900">
+              <span className="text-xs font-medium text-[#171713]">
                 {rider.name}
               </span>
             </div>
@@ -122,7 +122,7 @@ export function LiveDeliveriesTable() {
         accessorKey: "from",
         header: "FROM",
         cell: (info) => (
-          <span className="text-gray-700 text-xs font-medium">
+          <span className="text-[#484840] text-xs font-medium">
             {info.getValue() as string}
           </span>
         ),
@@ -131,7 +131,7 @@ export function LiveDeliveriesTable() {
         accessorKey: "destination",
         header: "DESTINATION",
         cell: (info) => (
-          <span className="text-gray-700 text-xs font-medium">
+          <span className="text-[#484840] text-xs font-medium">
             {info.getValue() as string}
           </span>
         ),
@@ -161,7 +161,7 @@ export function LiveDeliveriesTable() {
         accessorKey: "lastUpdated",
         header: "LAST UPDATED",
         cell: (info) => (
-          <span className="text-gray-400 text-xs">
+          <span className="text-[#85857B] text-xs">
             {info.getValue() as string}
           </span>
         ),
@@ -172,9 +172,9 @@ export function LiveDeliveriesTable() {
         cell: () => (
           <button
             type="button"
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-gray-700 hover:text-[#0A3323] hover:bg-emerald-50 transition-colors"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-[#484840] hover:text-[#014D21] hover:bg-[#E6F1EB] transition-colors"
           >
-            <Eye className="w-3.5 h-3.5 text-gray-400" />
+            <Eye className="w-3.5 h-3.5 text-[#85857B]" />
             <span>View</span>
           </button>
         ),
@@ -219,33 +219,33 @@ export function LiveDeliveriesTable() {
                 placeholder="Search Anything"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-9 pl-9 pr-3 text-xs bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0A3323]"
+                className="w-full h-9 pl-9 pr-3 text-xs bg-gray-50 border border-[#E3E3DC] rounded-lg text-[#171713] placeholder:text-[#A7A79D] focus:outline-none focus:ring-1 focus:ring-[#014D21]"
               />
             </div>
 
             {/* Export Button */}
             <Button variant="outline" size="sm" className="gap-1.5 text-xs h-9">
-              <Download className="w-3.5 h-3.5 text-gray-500" />
+              <Download className="w-3.5 h-3.5 text-[#85857B]" />
               <span>Export</span>
             </Button>
 
             {/* Filter Button */}
             <Button variant="outline" size="sm" className="gap-1.5 text-xs h-9">
-              <Filter className="w-3.5 h-3.5 text-gray-500" />
+              <Filter className="w-3.5 h-3.5 text-[#85857B]" />
               <span>Filter</span>
             </Button>
           </div>
         </div>
 
         {/* Filter Pills Row */}
-        <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+        <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-[#E3E3DC]">
           {/* Status Filter */}
           <div className="relative">
             <select
               value={statusFilter}
               aria-label="Filter deliveries by status"
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="appearance-none bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#0A3323] cursor-pointer"
+              className="appearance-none bg-gray-50 hover:bg-gray-100 text-[#484840] text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#014D21] cursor-pointer"
             >
               <option value="all">Status: All</option>
               <option value="delivered">Delivered</option>
@@ -254,7 +254,7 @@ export function LiveDeliveriesTable() {
               <option value="picked up">Picked Up</option>
               <option value="cancelled">Cancelled</option>
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#85857B] absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
           {/* Package Type Filter */}
@@ -263,7 +263,7 @@ export function LiveDeliveriesTable() {
               value={packageTypeFilter}
               aria-label="Filter deliveries by package type"
               onChange={(e) => setPackageTypeFilter(e.target.value)}
-              className="appearance-none bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#0A3323] cursor-pointer"
+              className="appearance-none bg-gray-50 hover:bg-gray-100 text-[#484840] text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#014D21] cursor-pointer"
             >
               <option value="all">Package Type: All</option>
               <option value="clothing">Clothing</option>
@@ -273,28 +273,28 @@ export function LiveDeliveriesTable() {
               <option value="books">Books</option>
               <option value="groceries">Groceries</option>
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#85857B] absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
           {/* Date Range Pill */}
           <div className="relative">
             <select
               aria-label="Filter deliveries by date range"
-              className="appearance-none bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#0A3323] cursor-pointer"
+              className="appearance-none bg-gray-50 hover:bg-gray-100 text-[#484840] text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#014D21] cursor-pointer"
               defaultValue="today"
             >
               <option value="today">Date: Today</option>
               <option value="7days">Last 7 Days</option>
               <option value="30days">Last 30 Days</option>
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#85857B] absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
           {/* Location Origin Pill */}
           <div className="relative">
             <select
               aria-label="Filter deliveries by origin location"
-              className="appearance-none bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#0A3323] cursor-pointer"
+              className="appearance-none bg-gray-50 hover:bg-gray-100 text-[#484840] text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#014D21] cursor-pointer"
               defaultValue="all"
             >
               <option value="all">Location: All</option>
@@ -303,14 +303,14 @@ export function LiveDeliveriesTable() {
               <option value="kano">Kano</option>
               <option value="osun">Osun</option>
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#85857B] absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
           {/* Destination Pill */}
           <div className="relative">
             <select
               aria-label="Filter deliveries by destination"
-              className="appearance-none bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#0A3323] cursor-pointer"
+              className="appearance-none bg-gray-50 hover:bg-gray-100 text-[#484840] text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#014D21] cursor-pointer"
               defaultValue="all"
             >
               <option value="all">Destination: All</option>
