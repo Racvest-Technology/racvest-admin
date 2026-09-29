@@ -1,6 +1,16 @@
+"use client";
+
 import * as React from "react";
-import { Users, Package, FileCheck2, ArrowUpRight } from "lucide-react";
+import {
+  TrendingUp,
+  Package,
+  CheckCircle2,
+  Truck,
+  Users,
+  Plane,
+} from "lucide-react";
 import { DashboardStats } from "@/types/delivery";
+import { MetricCard } from "@/components/shared";
 
 interface KpiHeroCardsProps {
   stats: DashboardStats;
@@ -8,68 +18,68 @@ interface KpiHeroCardsProps {
 
 export function KpiHeroCards({ stats }: KpiHeroCardsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-      {/* Total Users - High-contrast Forest Green Hero Card */}
-      <div className="bg-[#014D21] text-white rounded-xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden">
-        {/* Subtle background decoration */}
-        <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+    <div className="space-y-4">
+      {/* Row 1: Primary KPI Hero Cards (4 Columns matching User Management) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Card 1: Total Revenue (Dark Green Hero) */}
+        <MetricCard
+          title="Total Revenue"
+          value="₦48,250,000"
+          icon={TrendingUp}
+          variant="hero"
+          trend="+14.8%"
+        />
 
-        <div className="flex items-center justify-between">
-          <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white/90">
-            <Users className="w-5 h-5" />
-          </div>
-          <span className="inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-            <ArrowUpRight className="w-3 h-3" />
-            {stats.totalUsersTrend}
-          </span>
-        </div>
+        {/* Card 2: Active Deliveries */}
+        <MetricCard
+          title="Active Deliveries"
+          value={stats.activeDeliveries.toLocaleString()}
+          icon={Package}
+          variant="standard"
+          trend={stats.activeDeliveriesTrend}
+        />
 
-        <div className="mt-5">
-          <p className="text-sm font-medium text-emerald-100/70">Total User</p>
-          <p className="text-3xl font-bold tracking-tight text-white mt-1 font-primary">
-            {stats.totalUsers.toLocaleString()}
-          </p>
-        </div>
+        {/* Card 3: Delivered Today */}
+        <MetricCard
+          title="Delivered Today"
+          value="184"
+          icon={CheckCircle2}
+          variant="standard"
+          trend="+8.2%"
+        />
+
+        {/* Card 4: Active Couriers */}
+        <MetricCard
+          title="Active Couriers"
+          value="1,420"
+          icon={Truck}
+          variant="standard"
+          trend="+5.1%"
+        />
       </div>
 
-      {/* Active Deliveries */}
-      <div className="bg-white border border-[#E3E3DC] rounded-xl p-6 shadow-xs flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <div className="w-10 h-10 rounded-lg bg-[#E6F1EB] flex items-center justify-center text-[#014D21]">
-            <Package className="w-5 h-5" />
-          </div>
-          <span className="inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full bg-[#ECFDF3] text-[#15803D]">
-            <ArrowUpRight className="w-3 h-3" />
-            {stats.activeDeliveriesTrend}
-          </span>
-        </div>
-
-        <div className="mt-5">
-          <p className="text-sm font-medium text-[#66665D]">Active Deliveries</p>
-          <p className="text-3xl font-bold tracking-tight text-[#171713] mt-1 font-primary">
-            {stats.activeDeliveries.toLocaleString()}
-          </p>
-        </div>
-      </div>
-
-      {/* Pending Verification */}
-      <div className="bg-white border border-[#E3E3DC] rounded-xl p-6 shadow-xs flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <div className="w-10 h-10 rounded-lg bg-[#FFF4E5] flex items-center justify-center text-[#DC851F]">
-            <FileCheck2 className="w-5 h-5" />
-          </div>
-          <span className="inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full bg-[#FFF4E5] text-[#DC851F]">
-            <ArrowUpRight className="w-3 h-3" />
-            {stats.pendingVerificationTrend}
-          </span>
-        </div>
-
-        <div className="mt-5">
-          <p className="text-sm font-medium text-[#66665D]">Pending Verification</p>
-          <p className="text-3xl font-bold tracking-tight text-[#171713] mt-1 font-primary">
-            {stats.pendingVerification.toLocaleString()}
-          </p>
-        </div>
+      {/* Row 2: Secondary Role KPI Cards (3 Columns matching User Management) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <MetricCard
+          title="Total Senders"
+          value="12,430"
+          icon={Users}
+          variant="compact"
+          trend="+11.2%"
+        />
+        <MetricCard
+          title="Total Travelers"
+          value="6,240"
+          icon={Plane}
+          variant="compact"
+          trend="+4.8%"
+        />
+        <MetricCard
+          title="Total Couriers"
+          value="3,820"
+          icon={Users}
+          variant="accent"
+        />
       </div>
     </div>
   );

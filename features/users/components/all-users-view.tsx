@@ -5,12 +5,10 @@ import {
   Users,
   ShieldCheck,
   UserPlus,
-  AlertTriangle,
   Clock,
   Ban,
   Flag,
   XCircle,
-  ArrowRight,
   ChevronDown,
 } from "lucide-react";
 import {
@@ -24,6 +22,7 @@ import {
   Cell,
 } from "recharts";
 import { ALL_USERS_STATS } from "../data/mock-users";
+import { MetricCard, NeedsAttentionBar } from "@/components/shared";
 
 const MONTHLY_GROWTH_DATA = [
   { month: "Jan", users: 550 },
@@ -57,214 +56,71 @@ const COUNTRY_DISTRIBUTION = [
 export function AllUsersView() {
   return (
     <div className="space-y-6">
-      {/* Row 1: KPI Cards */}
+      {/* Row 1: KPI Hero Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total User (Dark Green Hero Card) */}
-        <div className="bg-[#01250F] text-white p-5 rounded-2xl flex flex-col justify-between shadow-xs">
-          <div className="flex items-center justify-between">
-            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white">
-              <Users className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <span className="text-xs text-white/70 font-medium font-body">
-              Total User
-            </span>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className="text-2xl font-bold font-heading">
-                {ALL_USERS_STATS.total.toLocaleString()}
-              </span>
-              <span className="text-xs font-semibold text-[#69AA84] font-body">
-                {ALL_USERS_STATS.totalGrowth}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Active Users */}
-        <div className="bg-white border border-[#E3E3DC] p-5 rounded-2xl flex flex-col justify-between shadow-2xs">
-          <div className="w-9 h-9 rounded-full bg-[#E6F1EB] text-[#014D21] flex items-center justify-center">
-            <Users className="w-4 h-4" />
-          </div>
-          <div className="mt-4">
-            <span className="text-xs text-[#85857B] font-medium font-body">
-              Active Users
-            </span>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className="text-2xl font-bold text-[#171713] font-heading">
-                {ALL_USERS_STATS.active.toLocaleString()}
-              </span>
-              <span className="text-xs font-semibold text-[#014D21] font-body">
-                {ALL_USERS_STATS.activeGrowth}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Verified Users */}
-        <div className="bg-white border border-[#E3E3DC] p-5 rounded-2xl flex flex-col justify-between shadow-2xs">
-          <div className="w-9 h-9 rounded-full bg-[#E6F1EB] text-[#014D21] flex items-center justify-center">
-            <ShieldCheck className="w-4 h-4" />
-          </div>
-          <div className="mt-4">
-            <span className="text-xs text-[#85857B] font-medium font-body">
-              Verified Users
-            </span>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className="text-2xl font-bold text-[#171713] font-heading">
-                {ALL_USERS_STATS.verified.toLocaleString()}
-              </span>
-              <span className="text-xs font-semibold text-[#014D21] font-body">
-                {ALL_USERS_STATS.verifiedGrowth}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* New Users Today */}
-        <div className="bg-white border border-[#E3E3DC] p-5 rounded-2xl flex flex-col justify-between shadow-2xs">
-          <div className="w-9 h-9 rounded-full bg-[#E6F1EB] text-[#014D21] flex items-center justify-center">
-            <UserPlus className="w-4 h-4" />
-          </div>
-          <div className="mt-4">
-            <span className="text-xs text-[#85857B] font-medium font-body">
-              New users Today
-            </span>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className="text-2xl font-bold text-[#171713] font-heading">
-                {ALL_USERS_STATS.todayCount}
-              </span>
-            </div>
-          </div>
-        </div>
+        <MetricCard
+          title="Total User"
+          value={ALL_USERS_STATS.total.toLocaleString()}
+          icon={Users}
+          variant="hero"
+          trend={ALL_USERS_STATS.totalGrowth}
+        />
+        <MetricCard
+          title="Active Users"
+          value={ALL_USERS_STATS.active.toLocaleString()}
+          icon={Users}
+          variant="standard"
+          trend={ALL_USERS_STATS.activeGrowth}
+        />
+        <MetricCard
+          title="Verified Users"
+          value={ALL_USERS_STATS.verified.toLocaleString()}
+          icon={ShieldCheck}
+          variant="standard"
+          trend={ALL_USERS_STATS.verifiedGrowth}
+        />
+        <MetricCard
+          title="New users Today"
+          value={ALL_USERS_STATS.todayCount}
+          icon={UserPlus}
+          variant="standard"
+        />
       </div>
 
       {/* Row 2: Secondary Role KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Total Sender */}
-        <div className="bg-white border border-[#E3E3DC] p-5 rounded-2xl flex items-center justify-between shadow-2xs">
-          <div>
-            <span className="text-xs text-[#85857B] font-medium font-body">
-              Total Sender
-            </span>
-            <h3 className="text-xl font-bold text-[#171713] mt-1 font-heading">
-              {ALL_USERS_STATS.totalSenders?.toLocaleString()}
-            </h3>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-[#E6F1EB] text-[#014D21] flex items-center justify-center">
-            <Users className="w-5 h-5" />
-          </div>
-        </div>
-
-        {/* Total Traveler */}
-        <div className="bg-white border border-[#E3E3DC] p-5 rounded-2xl flex items-center justify-between shadow-2xs">
-          <div>
-            <span className="text-xs text-[#85857B] font-medium font-body">
-              Total Traveler
-            </span>
-            <h3 className="text-xl font-bold text-[#171713] mt-1 font-heading">
-              {ALL_USERS_STATS.totalTravelers?.toLocaleString()}
-            </h3>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-[#E6F1EB] text-[#014D21] flex items-center justify-center">
-            <Users className="w-5 h-5" />
-          </div>
-        </div>
-
-        {/* Total Couriers (Orange Accent Card) */}
-        <div className="bg-[#DC851F] text-[#11110F] p-5 rounded-2xl flex items-center justify-between shadow-xs">
-          <div>
-            <span className="text-xs text-[#11110F]/80 font-medium font-body">
-              Total Couriers
-            </span>
-            <h3 className="text-xl font-bold text-[#11110F] mt-1 font-heading">
-              {ALL_USERS_STATS.totalCouriers?.toLocaleString()}
-            </h3>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-black/10 text-[#11110F] flex items-center justify-center">
-            <Users className="w-5 h-5" />
-          </div>
-        </div>
+        <MetricCard
+          title="Total Sender"
+          value={ALL_USERS_STATS.totalSenders?.toLocaleString() || "12,430"}
+          icon={Users}
+          variant="compact"
+        />
+        <MetricCard
+          title="Total Traveler"
+          value={ALL_USERS_STATS.totalTravelers?.toLocaleString() || "6,240"}
+          icon={Users}
+          variant="compact"
+        />
+        <MetricCard
+          title="Total Couriers"
+          value={ALL_USERS_STATS.totalCouriers?.toLocaleString() || "3,820"}
+          icon={Users}
+          variant="accent"
+        />
       </div>
 
       {/* Row 3: Needs Attention Action Bar */}
-      <div className="bg-white border border-[#E3E3DC] rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-2xs">
-        <div className="flex flex-wrap items-center gap-6">
-          {/* Main Needs Attention badge */}
-          <div className="flex items-center gap-3 pr-4 border-r border-[#E3E3DC]">
-            <div className="w-9 h-9 rounded-full bg-[#FFF8E7] text-[#DC851F] flex items-center justify-center">
-              <AlertTriangle className="w-4 h-4" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-[#171713] font-heading">
-                Needs Attention
-              </h4>
-              <p className="text-[11px] text-[#85857B] font-body">553 need review</p>
-            </div>
-          </div>
-
-          {/* Pending Verification */}
-          <button
-            type="button"
-            className="flex items-center gap-2 text-xs hover:opacity-80 transition-opacity cursor-pointer group"
-          >
-            <div className="w-6 h-6 rounded-full bg-[#FFF8E7] text-[#DC851F] flex items-center justify-center">
-              <Clock className="w-3 h-3" />
-            </div>
-            <span className="text-[#85857B] font-medium font-body">Pending Verification</span>
-            <span className="font-bold text-[#171713]">345</span>
-            <ArrowRight className="w-3 h-3 text-[#85857B] group-hover:translate-x-0.5 transition-transform" />
-          </button>
-
-          {/* Suspended */}
-          <button
-            type="button"
-            className="flex items-center gap-2 text-xs hover:opacity-80 transition-opacity cursor-pointer group"
-          >
-            <div className="w-6 h-6 rounded-full bg-[#FEF2F0] text-[#C83B2B] flex items-center justify-center">
-              <Ban className="w-3 h-3" />
-            </div>
-            <span className="text-[#85857B] font-medium font-body">Suspended</span>
-            <span className="font-bold text-[#171713]">128</span>
-            <ArrowRight className="w-3 h-3 text-[#85857B] group-hover:translate-x-0.5 transition-transform" />
-          </button>
-
-          {/* Flagged Accounts */}
-          <button
-            type="button"
-            className="flex items-center gap-2 text-xs hover:opacity-80 transition-opacity cursor-pointer group"
-          >
-            <div className="w-6 h-6 rounded-full bg-[#FFF8E7] text-[#DC851F] flex items-center justify-center">
-              <Flag className="w-3 h-3" />
-            </div>
-            <span className="text-[#85857B] font-medium font-body">Flagged Accounts</span>
-            <span className="font-bold text-[#171713]">45</span>
-            <ArrowRight className="w-3 h-3 text-[#85857B] group-hover:translate-x-0.5 transition-transform" />
-          </button>
-
-          {/* Rejected */}
-          <button
-            type="button"
-            className="flex items-center gap-2 text-xs hover:opacity-80 transition-opacity cursor-pointer group"
-          >
-            <div className="w-6 h-6 rounded-full bg-[#FEF2F0] text-[#C83B2B] flex items-center justify-center">
-              <XCircle className="w-3 h-3" />
-            </div>
-            <span className="text-[#85857B] font-medium font-body">Rejected</span>
-            <span className="font-bold text-[#171713]">35</span>
-            <ArrowRight className="w-3 h-3 text-[#85857B] group-hover:translate-x-0.5 transition-transform" />
-          </button>
-        </div>
-
-        {/* Review Queue Button */}
-        <button
-          type="button"
-          className="flex items-center gap-2 px-4 py-2 border border-[#E3E3DC] rounded-xl text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] transition-colors cursor-pointer shrink-0 font-body shadow-2xs"
-        >
-          <span>Review queue</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
+      <NeedsAttentionBar
+        title="Needs Attention"
+        subtitle="553 need review"
+        actionLabel="Review queue"
+        items={[
+          { label: "Pending Verification", count: 345, icon: Clock, color: "amber" },
+          { label: "Suspended", count: 128, icon: Ban, color: "red" },
+          { label: "Flagged Accounts", count: 45, icon: Flag, color: "amber" },
+          { label: "Rejected", count: 35, icon: XCircle, color: "red" },
+        ]}
+      />
 
       {/* Row 4: User Growth & Verification Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
