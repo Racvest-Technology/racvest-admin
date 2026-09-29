@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,20 +38,15 @@ export default function LoginPage() {
         />
         {/* Subtle Brand Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-between p-12">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-[#014D21] flex items-center justify-center text-[#DC851F] font-extrabold text-xl shadow-md border border-[#9BC7AD]/40">
-              R
-            </div>
-            <span className="font-extrabold text-2xl tracking-tight text-white font-primary">
-              RAC<span className="text-[#DC851F]">VEST</span>
-            </span>
+          <div className="bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-lg inline-flex items-center w-fit border border-white/20">
+            <Logo width={160} height={29} />
           </div>
 
           <div className="max-w-md">
-            <p className="text-xs uppercase tracking-widest text-emerald-400 font-semibold mb-2">
+            <p className="text-xs uppercase tracking-widest text-[#DC851F] font-semibold mb-2">
               Operations & Dispatch Portal
             </p>
-            <h2 className="text-3xl font-bold text-white leading-tight">
+            <h2 className="text-3xl font-bold text-white leading-tight font-primary">
               Powering on-demand courier logistics and nationwide package delivery.
             </h2>
           </div>
@@ -59,12 +55,15 @@ export default function LoginPage() {
 
       {/* Right Pane - Centered Auth Card */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
-        <div className="w-full max-w-md bg-white rounded-2xl p-8 sm:p-10 shadow-sm border border-gray-100">
+        <div className="w-full max-w-md bg-white rounded-2xl p-8 sm:p-10 shadow-sm border border-[#E3E3DC]">
           <div className="text-center mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+            <div className="flex justify-center mb-4 lg:hidden">
+              <Logo width={160} height={29} />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#171713] tracking-tight font-primary">
               Welcome Back
             </h1>
-            <p className="text-sm text-gray-400 mt-2">
+            <p className="text-sm text-[#85857B] mt-2 font-body">
               Sign in to access your administrative operations dashboard
             </p>
           </div>

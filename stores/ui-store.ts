@@ -38,6 +38,9 @@ export const uiStore = {
     state = { ...state, sidebarOpen: nextVal };
     emitChange();
   },
+  toggleSidebar() {
+    this.setSidebarOpen((prev) => !prev);
+  },
   openModal(modalId: string) {
     state = { ...state, activeModal: modalId };
     emitChange();
