@@ -11,24 +11,24 @@ import { initialDashboardStats } from "@/lib/mock-data";
 export default function DashboardPage() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* DRY Page Header matching User Management lead example */}
+      {/* DRY Page Header matching Figma */}
       <PageHeader
-        title="Dashboard"
-        subtitle="Real-time dispatch telemetry, active deliveries, and platform operations overview."
+        title="Welcome Back, Emmanuel"
+        subtitle="Here's what's happening across the Racvest platform today."
         dateFilterLabel="Last 7days"
         downloadLabel="Download report"
       />
 
-      {/* KPI Hero Cards: 4 Hero cards in Row 1 + 3 Role cards in Row 2 */}
+      {/* KPI Hero Cards: 3 Cards matching Figma Row 1 */}
       <KpiHeroCards stats={initialDashboardStats} />
 
-      {/* Operational Alerts Ticker Bar (DRY NeedsAttentionBar) */}
+      {/* Operational Alert Cards: 3 Cards matching Figma Row 2 */}
       <AlertTickers stats={initialDashboardStats} />
 
-      {/* Visual Analytics Grid (Delivery Volume Bar Chart + Status Donut + Corridors Map) */}
+      {/* Visual Analytics Grid: Row 3 (Revenue & Delivery) + Row 4 (User Growth & Delivery Status) */}
       <ChartsSection />
 
-      {/* Live Deliveries Ledger Table (TanStack Table + Nuqs, wrapped in Suspense) */}
+      {/* Live Deliveries Ledger Table matching Figma */}
       <React.Suspense
         fallback={
           <div className="bg-white border border-[#E3E3DC] rounded-2xl p-8 text-center text-xs text-[#85857B]">

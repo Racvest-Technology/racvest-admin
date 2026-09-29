@@ -1,52 +1,46 @@
 "use client";
 
 import * as React from "react";
-import { AlertTriangle, Flame, Clock, Headphones } from "lucide-react";
+import { AlertTriangle, Siren, Headphones } from "lucide-react";
 import { DashboardStats } from "@/types/delivery";
-import { NeedsAttentionBar } from "@/components/shared";
+import { MetricCard } from "@/components/shared";
 
 interface AlertTickersProps {
   stats: DashboardStats;
 }
 
 export function AlertTickers({ stats }: AlertTickersProps) {
-  const totalAlerts =
-    stats.openDisputes +
-    stats.sosAlerts +
-    stats.pendingVerification +
-    stats.supportTickets;
-
   return (
-    <NeedsAttentionBar
-      title="Operational Alerts"
-      subtitle={`${totalAlerts} need attention`}
-      actionLabel="Dispatch queue"
-      items={[
-        {
-          label: "Open Disputes",
-          count: stats.openDisputes,
-          icon: AlertTriangle,
-          color: "red",
-        },
-        {
-          label: "SOS Alerts",
-          count: stats.sosAlerts,
-          icon: Flame,
-          color: "red",
-        },
-        {
-          label: "Pending Verification",
-          count: stats.pendingVerification,
-          icon: Clock,
-          color: "amber",
-        },
-        {
-          label: "Support Tickets",
-          count: stats.supportTickets,
-          icon: Headphones,
-          color: "amber",
-        },
-      ]}
-    />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* 1. Open Disputes */}
+      <MetricCard
+        title="Open Disputes"
+        value={stats.openDisputes}
+        icon={AlertTriangle}
+        variant="compact"
+        iconBgClassName="bg-[#FFF4E5]"
+        iconColorClassName="text-[#DC851F]"
+      />
+
+      {/* 2. SOS Alerts */}
+      <MetricCard
+        title="SOS Alerts"
+        value={stats.sosAlerts}
+        icon={Siren}
+        variant="compact"
+        iconBgClassName="bg-[#FEF2F0]"
+        iconColorClassName="text-[#C83B2B]"
+      />
+
+      {/* 3. Support Ticket */}
+      <MetricCard
+        title="Support Ticket"
+        value={stats.supportTickets}
+        icon={Headphones}
+        variant="compact"
+        iconBgClassName="bg-[#EFF6FA]"
+        iconColorClassName="text-[#277A9E]"
+      />
+    </div>
   );
 }

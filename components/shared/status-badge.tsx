@@ -12,17 +12,19 @@ export interface StatusBadgeProps {
 export function StatusBadge({ status, dot = true, className }: StatusBadgeProps) {
   const normalized = status.toLowerCase().trim();
 
-  // Green / Safe / Verified / Active / Delivered
+  // Delivered: In Figma, it has a distinct solid dark green pill or high-contrast green
+  const isDelivered = normalized === "delivered";
+
+  // Active / Verified / Safe / Completed
   const isGreen =
     normalized === "active" ||
     normalized === "verified" ||
     normalized === "safe" ||
-    normalized === "delivered" ||
     normalized === "completed" ||
     normalized === "passed" ||
     normalized === "on";
 
-  // Blue/Teal / Picked Up / In Transit
+  // Blue/Teal: In Transit, Picked Up
   const isTeal =
     normalized === "in transit" ||
     normalized === "picked up" ||
@@ -49,8 +51,12 @@ export function StatusBadge({ status, dot = true, className }: StatusBadgeProps)
   // Purple / Inactive
   const isPurple = normalized === "inactive";
 
-  const colorStyles = isGreen
+  const colorStyles = isDelivered
+    ? "bg-[#01250F] text-white"
+    : isGreen
     ? "bg-[#E6F1EB] text-[#014D21]"
+    : normalized === "in transit"
+    ? "bg-[#E6F1EB] text-[#014D21] border border-[#9BC7AD]"
     : isTeal
     ? "bg-[#EFF6FA] text-[#277A9E]"
     : isAmber
@@ -61,7 +67,9 @@ export function StatusBadge({ status, dot = true, className }: StatusBadgeProps)
     ? "bg-[#F3E8FF] text-[#7E22CE]"
     : "bg-[#F7F7F3] text-[#85857B]";
 
-  const dotColor = isGreen
+  const dotColor = isDelivered
+    ? "bg-[#29CC6A]"
+    : isGreen || normalized === "in transit"
     ? "bg-[#014D21]"
     : isTeal
     ? "bg-[#277A9E]"

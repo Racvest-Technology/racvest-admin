@@ -6,6 +6,7 @@ export const DeliveryStatusEnum = z.enum([
   "Pending",
   "Picked Up",
   "Cancelled",
+  "Disputed",
 ]);
 
 export type DeliveryStatus = z.infer<typeof DeliveryStatusEnum>;

@@ -10,6 +10,8 @@ export interface MetricCardProps {
   variant?: MetricCardVariant;
   trend?: string;
   trendPositive?: boolean;
+  iconBgClassName?: string;
+  iconColorClassName?: string;
   className?: string;
 }
 
@@ -20,9 +22,11 @@ export function MetricCard({
   variant = "standard",
   trend,
   trendPositive = true,
+  iconBgClassName,
+  iconColorClassName,
   className,
 }: MetricCardProps) {
-  // 1. Hero Variant (Solid Dark Green #01250F matching User Management Figma)
+  // 1. Hero Variant (Solid Dark Green #01250F matching Figma)
   if (variant === "hero") {
     return (
       <div
@@ -37,7 +41,7 @@ export function MetricCard({
           </div>
         </div>
         <div className="mt-4">
-          <span className="text-xs text-white/70 font-medium">
+          <span className="text-xs text-white/70 font-medium font-body">
             {title}
           </span>
           <div className="flex items-baseline justify-between mt-1">
@@ -86,8 +90,11 @@ export function MetricCard({
     );
   }
 
-  // 3. Compact Horizontal Variant (White card with icon on right)
+  // 3. Compact Horizontal Variant (White card with icon on right, used for alerts & secondary stats)
   if (variant === "compact") {
+    const defaultBg = iconBgClassName || "bg-[#E6F1EB]";
+    const defaultColor = iconColorClassName || "text-[#014D21]";
+
     return (
       <div
         className={cn(
@@ -96,7 +103,7 @@ export function MetricCard({
         )}
       >
         <div>
-          <span className="text-xs text-[#85857B] font-medium">
+          <span className="text-xs text-[#85857B] font-medium block">
             {title}
           </span>
           <div className="flex items-baseline gap-2 mt-1">
@@ -115,14 +122,20 @@ export function MetricCard({
             )}
           </div>
         </div>
-        <div className="w-10 h-10 rounded-full bg-[#E6F1EB] text-[#014D21] flex items-center justify-center shrink-0">
-          <Icon className="w-5 h-5" />
+        <div
+          className={cn(
+            "w-9 h-9 rounded-full flex items-center justify-center shrink-0",
+            defaultBg,
+            defaultColor
+          )}
+        >
+          <Icon className="w-4 h-4" />
         </div>
       </div>
     );
   }
 
-  // 4. Standard Variant (White bordered card, icon on top left, stat on bottom)
+  // 4. Standard Variant (White bordered card, icon on top left, stat & trend on bottom)
   return (
     <div
       className={cn(
@@ -130,7 +143,13 @@ export function MetricCard({
         className
       )}
     >
-      <div className="w-9 h-9 rounded-full bg-[#E6F1EB] text-[#014D21] flex items-center justify-center">
+      <div
+        className={cn(
+          "w-9 h-9 rounded-full flex items-center justify-center",
+          iconBgClassName || "bg-[#E6F1EB]",
+          iconColorClassName || "text-[#014D21]"
+        )}
+      >
         <Icon className="w-4 h-4" />
       </div>
       <div className="mt-4">
