@@ -65,7 +65,7 @@ The project follows a feature-driven, domain-driven structure within the Next.js
 
 ```
 racvest-admin/
-├── app/
+├── app/                                # Next.js App Router (thin orchestration & routes)
 │   ├── (auth)/                         # Unauthenticated routes
 │   │   ├── login/                      # Admin login & MFA challenge
 │   │   └── forgot-password/            # Password recovery flow
@@ -73,61 +73,50 @@ racvest-admin/
 │   │   ├── layout.tsx                  # Persistent sidebar, header, global alert banner
 │   │   ├── page.tsx                    # Executive summary & quick-action dashboard
 │   │   ├── dispatch/                   # Live dispatch map & order orchestration
-│   │   │   ├── page.tsx                # Real-time full-screen map & order queue
-│   │   │   └── [orderId]/              # Granular order inspector & route replay
-│   │   ├── couriers/                   # Fleet management & KYC
-│   │   │   ├── page.tsx                # Courier directory, status filters, metrics
-│   │   │   ├── [courierId]/            # Courier detail, vehicle, audit trail
-│   │   │   └── verification/           # KYC review pipeline & document viewer
+│   │   ├── couriers/                   # Fleet management & KYC review
 │   │   ├── shipments/                  # Orders & shipment ledger
-│   │   │   ├── page.tsx                # Filterable order history & tracking
-│   │   │   └── disputes/               # Claims, lost/damaged item disputes
 │   │   ├── pricing/                    # Tariff & surge engine
-│   │   │   ├── page.tsx                # Base rates, vehicle class multipliers
-│   │   │   └── zones/                  # Polygonal geofence editor
 │   │   ├── finance/                    # Earnings, payouts, invoices
-│   │   │   ├── payouts/                # Rider batch payout approvals
-│   │   │   └── cod/                    # Cash on delivery reconciliation
 │   │   └── settings/                   # Platform configurations
-│   │       ├── roles/                  # RBAC permissions manager
-│   │       └── audit-logs/             # Tamper-evident admin action logs
 │   ├── api/                            # Next.js Route Handlers (BFF / Webhooks)
-│   │   ├── auth/                       # Session refresh, logout endpoints
-│   │   ├── telemetry/                  # Polling fallback / snapshot endpoints
-│   │   └── export/                     # CSV/Excel report streaming
 │   ├── globals.css                     # Tailwind CSS v4 entrypoint & theme tokens
 │   └── layout.tsx                      # Root layout (fonts, providers, metadata)
 │
-├── components/                         # UI Components
-│   ├── ui/                             # Base atomic primitives (buttons, dialogs, inputs)
-│   ├── layout/                         # Sidebar, TopNav, Breadcrumbs, Notifications
-│   ├── maps/                           # Mapbox/Leaflet wrapper, driver markers, route polylines
-│   └── domains/                        # Feature-specific composite widgets
-│       ├── dispatch/                   # DispatchQueueCard, ReassignCourierModal
-│       ├── couriers/                   # KYCApprovalDrawer, DocumentPreviewModal
-│       ├── pricing/                    # GeofenceDrawingCanvas, SurgeRuleSlider
-│       └── finance/                    # PayoutBatchTable, RefundApprovalDialog
+├── features/                           # Feature-driven vertical slices (Bulletproof architecture)
+│   ├── dashboard/                      # Dashboard metrics, charts & live delivery ledger
+│   ├── dispatch/                       # Real-time telemetry, map pins & driver reassignment
+│   ├── couriers/                       # Fleet directory, KYC verification & vehicle auditing
+│   ├── shipments/                      # Shipment lifecycle, disputes & PoD verification
+│   ├── pricing/                        # Tariff rules, surge multipliers & geofence zones
+│   └── finance/                        # Courier payout batches & Cash on Delivery reconciliation
 │
-├── hooks/                              # Custom React Hooks
-│   ├── use-telemetry.ts                # WebSocket live courier coordinate stream
-│   ├── use-rbac.ts                     # Current admin role permission evaluator
-│   └── use-debounce.ts                 # Search and filter input debouncing
+├── components/                         # Shared UI Primitives across all features
+│   ├── ui/                             # Base atomic primitives (buttons, dialogs, inputs)
+│   ├── layout/                         # Shell layout (Sidebar, Header, Breadcrumbs)
+│   └── maps/                           # Shared map engine canvas & tiles wrapper
+│
+├── config/                             # Global platform configuration & validated environment schemas
+│   ├── constants.ts                    # Brand names, pagination defaults, refresh intervals
+│   └── env.ts                          # Zod-validated runtime environment variables
+│
+├── hooks/                              # Shared, domain-agnostic React hooks
+│   ├── use-debounce.ts                 # Search and filter input debouncing
+│   └── use-media-query.ts              # Responsive viewport queries
+│
+├── stores/                             # Shared client-side state stores
+│   └── ui-store.ts                     # Global modal, drawer, and layout state
+│
+├── testing/                            # Test fixtures, mock factories & testing utilities
+│   └── mocks/                          # Mock generators for deliveries, users, and stats
 │
 ├── lib/                                # Core utilities and infrastructure clients
-│   ├── api-client.ts                   # Fetch wrapper with auto-auth and error interceptors
-│   ├── auth.ts                         # Server-side session verification & cookies
-│   ├── permissions.ts                  # Role permission definitions & matrix
-│   ├── geo.ts                          # Coordinates math, distance, bounding box calculations
-│   └── utils.ts                        # Formatting (currency, date-fns, phone masking)
+│   ├── mock-data.ts                    # Realistic demo and fallback datasets
+│   └── utils.ts                        # Styling (cn) and formatting utilities
 │
-├── types/                              # TypeScript definitions
-│   ├── courier.ts                      # Courier, Vehicle, KYC schemas
-│   ├── shipment.ts                     # Shipment, Waypoint, PoD schemas
-│   ├── pricing.ts                      # Tariff, Zone, Surge schemas
-│   ├── finance.ts                      # Payout, Invoice, Ledger schemas
-│   └── user.ts                         # AdminUser, Role, Permission schemas
+├── types/                              # Canonical system-wide TypeScript schemas & entities
+│   └── delivery.ts                     # DeliveryItem and DashboardStats definitions
 │
-├── public/                             # Static assets, vehicle SVG markers, logo
+├── public/                             # Static assets, SVG markers, branding assets
 ├── AGENTS.md                           # AI Agent guidelines & repo standards
 ├── ARCHITECTURE.md                     # This document
 ├── PRD.md                              # Product Requirements Document

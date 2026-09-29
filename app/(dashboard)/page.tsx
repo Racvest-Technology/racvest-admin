@@ -1,9 +1,11 @@
 import * as React from "react";
 import { Calendar, RefreshCw, Download, ChevronDown } from "lucide-react";
-import { KpiHeroCards } from "@/components/dashboard/kpi-hero-cards";
-import { AlertTickers } from "@/components/dashboard/alert-tickers";
-import { ChartsSection } from "@/components/dashboard/charts-section";
-import { LiveDeliveriesTable } from "@/components/dashboard/live-deliveries-table";
+import {
+  KpiHeroCards,
+  AlertTickers,
+  ChartsSection,
+  LiveDeliveriesTable,
+} from "@/features/dashboard";
 import { Button } from "@/components/ui/button";
 import { initialDashboardStats } from "@/lib/mock-data";
 
