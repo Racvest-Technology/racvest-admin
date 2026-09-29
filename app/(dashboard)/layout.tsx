@@ -10,7 +10,13 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-[#F7F7F3]">
       {/* Sidebar */}
-      <Sidebar />
+      <React.Suspense
+        fallback={
+          <aside className="shrink-0 bg-white border-r border-[#E3E3DC] w-[264px] h-screen sticky top-0" />
+        }
+      >
+        <Sidebar />
+      </React.Suspense>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">

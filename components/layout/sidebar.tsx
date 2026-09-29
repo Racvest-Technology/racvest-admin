@@ -114,15 +114,15 @@ const mainNavItems: NavItem[] = [
   },
   {
     title: "User Management",
-    href: "/users",
+    href: "/users?tab=all",
     icon: UsersRound,
     hasSubmenu: true,
     subItems: [
-      { title: "Sender/Traveller", href: "/users/senders" },
-      { title: "Courier", href: "/users/couriers" },
-      { title: "Business", href: "/users/business" },
-      { title: "Shadow Banned", href: "/users/shadow-banned" },
-      { title: "Suspended", href: "/users/suspended" },
+      { title: "Sender/Traveller", href: "/users?tab=sender" },
+      { title: "Courier", href: "/users?tab=courier" },
+      { title: "Business", href: "/users?tab=all&type=business" },
+      { title: "Shadow Banned", href: "/users?tab=all&status=banned" },
+      { title: "Suspended", href: "/users?tab=all&status=suspended" },
     ],
   },
   {
@@ -249,7 +249,10 @@ export function Sidebar() {
         return userToggledSubmenus[itemTitle];
       }
       if (subItems) {
-        return subItems.some((sub) => pathname === sub.href);
+        return subItems.some((sub) => {
+          const subPath = sub.href.split("?")[0];
+          return pathname === subPath;
+        });
       }
       if (itemTitle === "Setting") {
         return pathname.startsWith("/settings");
@@ -354,25 +357,24 @@ export function Sidebar() {
         <div className="flex-1 overflow-y-auto space-y-1 scrollbar-thin scrollbar-thumb-[#E3E3DC]">
           {mainNavItems.map((item) => {
             const Icon = item.icon;
+            const itemPath = item.href.split("?")[0];
             const isDirectActive =
               item.href === "/"
                 ? pathname === "/" || pathname === ""
-                : pathname === item.href;
+                : pathname === itemPath || pathname.startsWith(`${itemPath}/`);
             const isChildActive =
-              item.subItems?.some((sub) => pathname === sub.href) ?? false;
+              item.subItems?.some((sub) => {
+                const subPath = sub.href.split("?")[0];
+                return pathname === subPath;
+              }) ?? false;
             const isActive = isDirectActive || isChildActive;
             const itemSubmenuOpen = isSubmenuOpen(item.title, item.subItems);
 
             return (
               <div key={item.title} className="relative group">
                 <div
-                  onClick={(e) => {
-                    if (item.hasSubmenu) {
-                      toggleSubmenu(item.title, item.subItems, e);
-                    }
-                  }}
                   className={cn(
-                    "flex items-center rounded-xl transition-all duration-150 cursor-pointer",
+                    "flex items-center rounded-xl transition-all duration-150 select-none",
                     sidebarOpen
                       ? "px-2 py-1.5 justify-between"
                       : "p-1.5 justify-center",
@@ -381,11 +383,21 @@ export function Sidebar() {
                       : "text-[#5A5A52] hover:bg-black/5 hover:text-[#171713]"
                   )}
                 >
-                  <div
+                  <Link
+                    href={item.href}
+                    onClick={() => {
+                      if (item.hasSubmenu) {
+                        setUserToggledSubmenus((prev) => ({
+                          ...prev,
+                          [item.title]: true,
+                        }));
+                      }
+                    }}
                     className={cn(
-                      "flex items-center",
-                      sidebarOpen ? "gap-2.5 min-w-0" : "justify-center"
+                      "flex items-center flex-1 min-w-0 transition-opacity",
+                      sidebarOpen ? "gap-2.5" : "justify-center"
                     )}
+                    title={item.title}
                   >
                     {/* Circular Icon Badge matching Figma */}
                     <div
@@ -405,15 +417,26 @@ export function Sidebar() {
                         {item.title}
                       </span>
                     )}
-                  </div>
+                  </Link>
 
-                  {/* Submenu Chevron matching Figma */}
+                  {/* Submenu Chevron Toggle Button */}
                   {sidebarOpen && item.hasSubmenu && (
-                    itemSubmenuOpen ? (
-                      <ChevronRight className="w-3.5 h-3.5 text-[#5A5A52] shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-3.5 h-3.5 text-[#85857B] shrink-0" />
-                    )
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleSubmenu(item.title, item.subItems, e);
+                      }}
+                      className="p-1 rounded-md hover:bg-black/10 transition-colors cursor-pointer shrink-0 ml-1"
+                      aria-label={`Toggle ${item.title} submenu`}
+                    >
+                      {itemSubmenuOpen ? (
+                        <ChevronRight className="w-3.5 h-3.5 text-[#5A5A52] shrink-0" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5 text-[#85857B] shrink-0" />
+                      )}
+                    </button>
                   )}
                 </div>
 
@@ -421,10 +444,20 @@ export function Sidebar() {
                 {sidebarOpen && item.hasSubmenu && itemSubmenuOpen && item.subItems && (
                   <div className="mt-1 pl-4 pr-1 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
                     {item.subItems.map((sub) => {
-                      const isSubActive = pathname === sub.href;
+                      const isSubActive =
+                        sub.href.includes("?tab=")
+                          ? pathname === "/users" &&
+                            currentTab ===
+                              (sub.href.includes("tab=sender")
+                                ? "sender"
+                                : sub.href.includes("tab=courier")
+                                ? "courier"
+                                : "all")
+                          : pathname === sub.href;
+
                       return (
                         <Link
-                          key={sub.href}
+                          key={`${item.title}-${sub.title}`}
                           href={sub.href}
                           className={cn(
                             "flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors font-body group/sub",
@@ -461,7 +494,7 @@ export function Sidebar() {
                       <div className="flex flex-col gap-1">
                         {item.subItems.map((sub) => (
                           <Link
-                            key={sub.href}
+                            key={`collapsed-${item.title}-${sub.title}`}
                             href={sub.href}
                             className={cn(
                               "text-left py-0.5 hover:text-[#DC851F] transition-colors",
@@ -499,9 +532,8 @@ export function Sidebar() {
             return (
               <div className="relative group">
                 <div
-                  onClick={(e) => toggleSubmenu("Setting", settingsSubItems, e)}
                   className={cn(
-                    "flex items-center rounded-xl transition-all duration-150 cursor-pointer",
+                    "flex items-center rounded-xl transition-all duration-150 select-none",
                     sidebarOpen
                       ? "px-2 py-1.5 justify-between"
                       : "p-1.5 justify-center",
@@ -510,11 +542,19 @@ export function Sidebar() {
                       : "text-[#5A5A52] hover:bg-black/5 hover:text-[#171713]"
                   )}
                 >
-                  <div
+                  <Link
+                    href="/settings"
+                    onClick={() => {
+                      setUserToggledSubmenus((prev) => ({
+                        ...prev,
+                        Setting: true,
+                      }));
+                    }}
                     className={cn(
-                      "flex items-center",
+                      "flex items-center flex-1 min-w-0 transition-opacity",
                       sidebarOpen ? "gap-2.5" : "justify-center"
                     )}
+                    title="Setting"
                   >
                     <div
                       className={cn(
@@ -531,13 +571,25 @@ export function Sidebar() {
                         Setting
                       </span>
                     )}
-                  </div>
+                  </Link>
+
                   {sidebarOpen && (
-                    isSettingsOpen ? (
-                      <ChevronRight className="w-3.5 h-3.5 text-[#5A5A52] shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-3.5 h-3.5 text-[#85857B] shrink-0" />
-                    )
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleSubmenu("Setting", settingsSubItems, e);
+                      }}
+                      className="p-1 rounded-md hover:bg-black/10 transition-colors cursor-pointer shrink-0 ml-1"
+                      aria-label="Toggle Setting submenu"
+                    >
+                      {isSettingsOpen ? (
+                        <ChevronRight className="w-3.5 h-3.5 text-[#5A5A52] shrink-0" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5 text-[#85857B] shrink-0" />
+                      )}
+                    </button>
                   )}
                 </div>
 
@@ -548,7 +600,7 @@ export function Sidebar() {
                       const isSubActive = pathname === sub.href;
                       return (
                         <Link
-                          key={sub.href}
+                          key={`settings-${sub.title}`}
                           href={sub.href}
                           className={cn(
                             "flex items-center gap-3 px-2 py-1.5 rounded-xl transition-colors font-body group/sub",
@@ -583,7 +635,7 @@ export function Sidebar() {
                     <div className="flex flex-col gap-1">
                       {settingsSubItems.map((sub) => (
                         <Link
-                          key={sub.href}
+                          key={`collapsed-settings-${sub.title}`}
                           href={sub.href}
                           className={cn(
                             "text-left py-0.5 hover:text-[#DC851F] transition-colors",

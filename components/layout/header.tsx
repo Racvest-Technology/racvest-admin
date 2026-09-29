@@ -5,40 +5,43 @@ import { Search, Bell, ChevronDown } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="h-16 px-8 bg-white border-b border-gray-100 flex items-center justify-between sticky top-0 z-30">
-      {/* Search Input */}
-      <div className="relative w-96">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+    <header className="h-16 px-8 bg-white border-b border-[#E3E3DC] flex items-center justify-between sticky top-0 z-30">
+      {/* Search Input matching Figma */}
+      <div className="relative w-80">
         <input
           type="text"
           placeholder="Search Anything"
-          className="w-full h-10 pl-10 pr-4 text-sm bg-gray-50 border border-[#E3E3DC] rounded-lg text-[#171713] placeholder:text-[#A7A79D] focus:outline-none focus:ring-2 focus:ring-[#014D21] focus:bg-white transition-all"
+          className="w-full h-10 pl-4 pr-10 text-sm bg-[#F7F7F3] border border-transparent rounded-xl text-[#171713] placeholder:text-[#85857B] focus:outline-none focus:ring-2 focus:ring-[#014D21] focus:bg-white focus:border-[#014D21] transition-all font-body"
         />
+        <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#85857B] pointer-events-none" />
       </div>
 
-      {/* Admin Profile & Actions */}
-      <div className="flex items-center gap-4">
+      {/* Admin Profile & Actions matching Figma */}
+      <div className="flex items-center gap-3">
         {/* Notification Bell */}
         <button
           type="button"
-          className="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors relative"
+          className="w-9 h-9 rounded-full bg-[#F7F7F3] flex items-center justify-center text-[#484840] hover:text-[#171713] hover:bg-[#EBEBE4] transition-colors relative cursor-pointer"
           aria-label="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#C83B2B] ring-2 ring-white"></span>
+          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#C83B2B] ring-2 ring-white"></span>
         </button>
 
-        {/* User Badge */}
-        <div className="flex items-center gap-3 pl-3 border-l border-[#E3E3DC] cursor-pointer group">
-          <div className="w-8 h-8 rounded-full bg-[#E6F1EB] text-[#014D21] font-semibold text-xs flex items-center justify-center border border-[#9BC7AD]">
-            EM
+        {/* User Profile Pill */}
+        <div className="flex items-center gap-2.5 pl-2 py-1 cursor-pointer group">
+          <div className="w-8 h-8 rounded-full bg-[#014D21] text-white font-semibold text-xs flex items-center justify-center shrink-0 shadow-xs">
+            E
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-sm font-medium text-gray-800 group-hover:text-gray-900">
+          <div className="flex flex-col text-left">
+            <span className="text-xs font-semibold text-[#171713] leading-tight font-body">
               Emmanuel
             </span>
-            <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 transition-transform" />
+            <span className="text-[10px] text-[#85857B] leading-tight font-body">
+              emmanuel.lewis@example.com
+            </span>
           </div>
+          <ChevronDown className="w-3.5 h-3.5 text-[#85857B] group-hover:text-[#171713] transition-transform ml-0.5" />
         </div>
       </div>
     </header>
