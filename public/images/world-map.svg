@@ -1,0 +1,9 @@
+<svg width="898" height="320" viewBox="0 0 898 320" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <pattern id="pattern0_1548_31740" patternContentUnits="objectBoundingBox" width="1" height="1">
+      <use xlink:href="#image0_1548_31740" transform="matrix(0.00100854 0 0 0.00224313 -0.122597 -0.00267744)"/>
+    </pattern>
+    <image id="image0_1548_31740" width="1248" height="447" preserveAspectRatio="none" xlink:href="/images/world-distribution-map.png"/>
+  </defs>
+  <path d="M0 16C0 7.16345 7.16344 0 16 0H881.398C890.234 0 897.397 7.16344 897.397 16V304C897.397 312.837 890.234 320 881.397 320H16C7.16341 320 0 312.837 0 304V16Z" fill="url(#pattern0_1548_31740)"/>
+</svg>
