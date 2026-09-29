@@ -10,7 +10,7 @@ import { initialDashboardStats } from "@/lib/mock-data";
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-[1600px] mx-auto">
       {/* DRY Page Header matching Figma */}
       <PageHeader
         title="Welcome Back, Emmanuel"
