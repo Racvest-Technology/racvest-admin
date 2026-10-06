@@ -125,8 +125,8 @@ export const MOCK_SENDERS: UserItem[] = [
 export const MOCK_TRAVELERS: UserItem[] = [
   {
     id: "trv-1",
-    name: "Liam Johnson",
-    email: "Liam.Johnson@gmail.com",
+    name: "Lara O. Ibrahim",
+    email: "laraoibrahim@gmail.com",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80",
     codeId: "#RCV-29842",
     location: "Lagos",
@@ -200,9 +200,9 @@ export const MOCK_TRAVELERS: UserItem[] = [
 export const MOCK_COURIERS: UserItem[] = [
   {
     id: "cur-1",
-    name: "Ava Carter",
-    email: "Ava.Carter@example.com",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80",
+    name: "Samuel Adeyemi",
+    email: "samueladeyemi@gmail.com",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80",
     codeId: "#CUR-10001",
     location: "Lagos",
     verification: "Verified",

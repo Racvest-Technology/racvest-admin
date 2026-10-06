@@ -306,7 +306,7 @@ export function RoleUsersView({ role }: RoleUsersViewProps) {
                     {/* Actions View Link */}
                     <td className="py-3 px-4 text-center">
                       <Link
-                        href={`/users/${item.id}?role=${role}`}
+                        href={`/users/${item.id}?role=${role}&verified=${item.verification === "Verified"}`}
                         className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-[#014D21] hover:bg-[#E6F1EB] transition-colors cursor-pointer"
                       >
                         <Eye className="w-3.5 h-3.5 text-[#014D21]" />
