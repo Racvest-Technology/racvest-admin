@@ -23,7 +23,6 @@ import {
   Check,
   X,
   FileCheck,
-  AlertTriangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -31,6 +30,16 @@ import {
   MOCK_TRAVELERS,
   MOCK_COURIERS,
 } from "../data/mock-users";
+import {
+  DocumentPreviewDialog,
+  CompareDocumentsDialog,
+  SendMessageDialog,
+  VerifyIdentityDialog,
+  VerifyVehicleDialog,
+  RequestReverificationDialog,
+  DEFAULT_IDENTITY_REVERIFY_ITEMS,
+  DEFAULT_VEHICLE_REVERIFY_ITEMS,
+} from "@/components/shared";
 
 export interface UserDetailViewProps {
   userId?: string;
@@ -81,20 +90,27 @@ export function UserDetailView({
 
   const [activityFilter, setActivityFilter] = React.useState("all");
 
-  // Interactive document viewer modal state
-  const [viewingDocument, setViewingDocument] = React.useState<{
-    title: string;
+  // Reusable document preview dialog state
+  const [previewDoc, setPreviewDoc] = React.useState<{
     image: string;
-    type: string;
-    documentNumber?: string;
-    submittedDate?: string;
-    isVerified?: boolean;
+    title: string;
+    isNationalIdCard?: boolean;
+    showCompare?: boolean;
   } | null>(null);
 
-  // Re-verification modal state
-  const [reverificationModalOpen, setReverificationModalOpen] = React.useState(false);
-  const [reverificationReason, setReverificationReason] = React.useState("blurry");
-  const [reverificationNotes, setReverificationNotes] = React.useState("");
+  // Side-by-side compare dialog state
+  const [isCompareOpen, setIsCompareOpen] = React.useState(false);
+
+  // Send message dialog state
+  const [isSendMessageOpen, setIsSendMessageOpen] = React.useState(false);
+
+  // Verify identity dialog flow state
+  const [isVerifyIdentityDialogOpen, setIsVerifyIdentityDialogOpen] = React.useState(false);
+  const [isVerifyDocumentsDialogOpen, setIsVerifyDocumentsDialogOpen] = React.useState(false);
+
+  // Re-verification modal state (identity & vehicle)
+  const [isReverifyIdentityOpen, setIsReverifyIdentityOpen] = React.useState(false);
+  const [isReverifyVehicleOpen, setIsReverifyVehicleOpen] = React.useState(false);
 
   // Toast feedback
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
@@ -165,11 +181,6 @@ export function UserDetailView({
     showToast("Vehicle documents verified successfully!");
   };
 
-  const handleSendReverification = (e: React.FormEvent) => {
-    e.preventDefault();
-    setReverificationModalOpen(false);
-    showToast("Re-verification request dispatched to user.");
-  };
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto pb-16 font-body">
@@ -246,6 +257,7 @@ export function UserDetailView({
 
           <button
             type="button"
+            onClick={() => setIsSendMessageOpen(true)}
             className="flex items-center gap-2 px-4 py-2.5 bg-[#014D21] hover:bg-[#01451E] active:bg-[#013A19] text-white rounded-xl text-xs font-semibold shadow-xs transition-all cursor-pointer"
           >
             <Mail className="w-4 h-4" />
@@ -675,13 +687,11 @@ export function UserDetailView({
                 <button
                   type="button"
                   onClick={() =>
-                    setViewingDocument({
-                      title: "Government National ID Card (NIN)",
+                    setPreviewDoc({
+                      title: "Federal Republic of Nigeria National Identity Card",
                       image: livenessPhoto,
-                      type: "Government Identification",
-                      documentNumber: "1234 5678 901",
-                      submittedDate: "Jan 14, 2024",
-                      isVerified,
+                      isNationalIdCard: true,
+                      showCompare: true,
                     })
                   }
                   className="text-xs font-semibold text-[#014D21] hover:underline cursor-pointer"
@@ -722,13 +732,11 @@ export function UserDetailView({
                 <button
                   type="button"
                   onClick={() =>
-                    setViewingDocument({
+                    setPreviewDoc({
                       title: "Biometric Liveness Selfie Check",
                       image: livenessPhoto,
-                      type: "Facial Match & Liveness Telemetry",
-                      documentNumber: "LIV-8829-OK",
-                      submittedDate: "Jan 14, 2024",
-                      isVerified,
+                      isNationalIdCard: false,
+                      showCompare: true,
                     })
                   }
                   className="text-xs font-semibold text-[#014D21] hover:underline cursor-pointer"
@@ -763,7 +771,7 @@ export function UserDetailView({
           {isVerified ? (
             <button
               type="button"
-              onClick={() => setReverificationModalOpen(true)}
+              onClick={() => setIsReverifyIdentityOpen(true)}
               className="w-full py-2.5 rounded-xl border border-[#E3E3DC] text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] transition-colors cursor-pointer text-center"
             >
               Request Re-Verification
@@ -772,14 +780,14 @@ export function UserDetailView({
             <div className="space-y-2 pt-1">
               <button
                 type="button"
-                onClick={() => setReverificationModalOpen(true)}
+                onClick={() => setIsReverifyIdentityOpen(true)}
                 className="w-full py-2.5 rounded-xl border border-[#E3E3DC] text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] transition-colors cursor-pointer text-center"
               >
                 Request Re-Verification
               </button>
               <button
                 type="button"
-                onClick={handleVerifyIdentity}
+                onClick={() => setIsVerifyIdentityDialogOpen(true)}
                 className="w-full py-2.5 rounded-xl bg-[#014D21] hover:bg-[#01451E] active:bg-[#013A19] text-white text-xs font-semibold transition-all cursor-pointer shadow-xs text-center flex items-center justify-center gap-2"
               >
                 <Check className="w-4 h-4" />
@@ -948,7 +956,7 @@ export function UserDetailView({
             <div className="flex items-center gap-2.5">
               <button
                 type="button"
-                onClick={() => setReverificationModalOpen(true)}
+                onClick={() => setIsReverifyVehicleOpen(true)}
                 className="px-4 py-2 rounded-xl border border-[#E3E3DC] text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] transition-colors cursor-pointer"
               >
                 Request Re-Verification
@@ -956,7 +964,7 @@ export function UserDetailView({
               {!vehicleVerified && (
                 <button
                   type="button"
-                  onClick={handleVerifyDocuments}
+                  onClick={() => setIsVerifyDocumentsDialogOpen(true)}
                   className="px-4 py-2 rounded-xl bg-[#014D21] hover:bg-[#01451E] active:bg-[#013A19] text-white text-xs font-semibold transition-all cursor-pointer shadow-xs flex items-center gap-1.5"
                 >
                   <FileCheck className="w-3.5 h-3.5" />
@@ -1038,14 +1046,12 @@ export function UserDetailView({
               <button
                 type="button"
                 onClick={() =>
-                  setViewingDocument({
+                  setPreviewDoc({
                     title: "Vehicle Exterior Photograph",
                     image:
                       "https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&auto=format&fit=crop&q=80",
-                    type: "Vehicle Front & Side Inspection",
-                    documentNumber: "Toyota RAV4 (Black)",
-                    submittedDate: "Jan 14, 2024",
-                    isVerified: vehicleVerified,
+                    isNationalIdCard: false,
+                    showCompare: false,
                   })
                 }
                 className="text-[11px] font-semibold text-[#014D21] hover:underline cursor-pointer text-center block w-full py-0.5"
@@ -1085,13 +1091,11 @@ export function UserDetailView({
                 <button
                   type="button"
                   onClick={() =>
-                    setViewingDocument({
+                    setPreviewDoc({
                       title: "Federal Road Safety Driver's License",
                       image: userAvatar,
-                      type: "FRSC Commercial Driver's License",
-                      documentNumber: "LAG-2983-DRV",
-                      submittedDate: "Jan 14, 2024",
-                      isVerified: vehicleVerified,
+                      isNationalIdCard: false,
+                      showCompare: false,
                     })
                   }
                   className="text-[11px] font-semibold text-[#014D21] hover:underline cursor-pointer text-center block w-full py-0.5"
@@ -1122,14 +1126,12 @@ export function UserDetailView({
                 <button
                   type="button"
                   onClick={() =>
-                    setViewingDocument({
+                    setPreviewDoc({
                       title: "Certificate of Proof of Ownership (CMR)",
                       image:
                         "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80",
-                      type: "Central Motor Registry (CMR) Documentation",
-                      documentNumber: "CMR-98214-LAG",
-                      submittedDate: "Jan 14, 2024",
-                      isVerified: vehicleVerified,
+                      isNationalIdCard: false,
+                      showCompare: false,
                     })
                   }
                   className="text-[11px] font-semibold text-[#014D21] hover:underline cursor-pointer text-center block w-full py-0.5"
@@ -1258,192 +1260,105 @@ export function UserDetailView({
         </div>
       </div>
 
-      {/* 7. Modal: Full Resolution Document Inspector */}
-      {viewingDocument && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-[#E3E3DC]">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E3E3DC]">
-              <div>
-                <h3 className="text-base font-bold text-[#171713] font-heading">
-                  {viewingDocument.title}
-                </h3>
-                <span className="text-xs text-[#85857B] font-medium">
-                  {viewingDocument.type}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setViewingDocument(null)}
-                className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-[#85857B] hover:text-[#171713] cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Document Image Showcase */}
-            <div className="relative h-64 sm:h-72 w-full rounded-xl overflow-hidden bg-neutral-900 border border-[#E3E3DC] shadow-inner flex items-center justify-center">
-              <Image
-                src={viewingDocument.image}
-                alt={viewingDocument.title}
-                fill
-                unoptimized
-                className="object-contain"
-              />
-            </div>
-
-            {/* Document Metadata Details */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#F7F7F3] p-3.5 rounded-xl text-xs">
-              <div>
-                <span className="text-[#85857B] block text-[10px] uppercase font-semibold">
-                  Reference ID
-                </span>
-                <span className="font-bold text-[#171713] mt-0.5 block font-mono">
-                  {viewingDocument.documentNumber || "N/A"}
-                </span>
-              </div>
-              <div>
-                <span className="text-[#85857B] block text-[10px] uppercase font-semibold">
-                  Submitted
-                </span>
-                <span className="font-bold text-[#171713] mt-0.5 block">
-                  {viewingDocument.submittedDate || "Recent"}
-                </span>
-              </div>
-              <div>
-                <span className="text-[#85857B] block text-[10px] uppercase font-semibold">
-                  Status
-                </span>
-                <span
-                  className={cn(
-                    "font-bold mt-0.5 inline-block text-[11px]",
-                    viewingDocument.isVerified ? "text-[#014D21]" : "text-[#DC2626]"
-                  )}
-                >
-                  {viewingDocument.isVerified ? "● Verified / Passed" : "● Pending Review"}
-                </span>
-              </div>
-            </div>
-
-            {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-2.5 pt-2">
-              <button
-                type="button"
-                onClick={() => setViewingDocument(null)}
-                className="px-4 py-2 rounded-xl border border-[#E3E3DC] text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] cursor-pointer"
-              >
-                Close
-              </button>
-              {!viewingDocument.isVerified && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleVerifyIdentity();
-                    setViewingDocument(null);
-                  }}
-                  className="px-4 py-2 rounded-xl bg-[#014D21] hover:bg-[#01451E] text-white text-xs font-semibold cursor-pointer shadow-xs"
-                >
-                  Approve Document
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
+      {/* 7. Reusable Document Preview Dialog */}
+      {previewDoc && (
+        <DocumentPreviewDialog
+          isOpen={Boolean(previewDoc)}
+          onClose={() => setPreviewDoc(null)}
+          image={previewDoc.image}
+          title={previewDoc.title}
+          isNationalIdCard={previewDoc.isNationalIdCard}
+          showCompareButton={previewDoc.showCompare !== false}
+          onCompare={() => {
+            setPreviewDoc(null);
+            setIsCompareOpen(true);
+          }}
+        />
       )}
 
-      {/* 8. Modal: Request Re-Verification Reason Dialog */}
-      {reverificationModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-[#E3E3DC]">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E3E3DC]">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
-                  <AlertTriangle className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-[#171713] font-heading">
-                    Request Re-Verification
-                  </h3>
-                  <p className="text-xs text-[#85857B]">
-                    Notify {userName} to resubmit documentation
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setReverificationModalOpen(false)}
-                className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-[#85857B] hover:text-[#171713] cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+      {/* 8. Reusable Side-by-Side Compare Documents Dialog */}
+      <CompareDocumentsDialog
+        isOpen={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+        livenessImage={livenessPhoto}
+        idCardImage={livenessPhoto}
+        userName={userName}
+        onApprove={handleVerifyIdentity}
+        onRequestReverification={() => setIsReverifyIdentityOpen(true)}
+      />
 
-            <form onSubmit={handleSendReverification} className="space-y-4 text-xs">
-              <div className="space-y-2">
-                <label className="font-bold text-[#171713] block">
-                  Select Primary Reason:
-                </label>
-                <div className="space-y-1.5">
-                  {[
-                    { id: "blurry", label: "Government ID is blurry or unreadable" },
-                    { id: "mismatch", label: "Selfie does not match photo on government ID" },
-                    { id: "expired", label: "Uploaded document is expired or invalidated" },
-                    { id: "vehicle", label: "Vehicle registration / license plate mismatch" },
-                  ].map((opt) => (
-                    <label
-                      key={opt.id}
-                      className={cn(
-                        "flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all",
-                        reverificationReason === opt.id
-                          ? "border-[#014D21] bg-[#E6F1EB]/30 text-[#014D21] font-semibold"
-                          : "border-[#E3E3DC] text-[#484840] hover:bg-[#F7F7F3]"
-                      )}
-                    >
-                      <input
-                        type="radio"
-                        name="reason"
-                        value={opt.id}
-                        checked={reverificationReason === opt.id}
-                        onChange={() => setReverificationReason(opt.id)}
-                        className="text-[#014D21] focus:ring-[#014D21]"
-                      />
-                      <span>{opt.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+      {/* 9. Reusable Send Message Flow Dialog (Screens 1, 2, and 3) */}
+      <SendMessageDialog
+        isOpen={isSendMessageOpen}
+        onClose={() => setIsSendMessageOpen(false)}
+        recipient={{
+          name: userName,
+          role: isCourier
+            ? "Courier · Lagos, Nigeria"
+            : isTraveler
+            ? "Traveler · Lagos, Nigeria"
+            : "Sender · Lagos, Nigeria",
+          email: userEmail,
+          avatar: userAvatar,
+        }}
+        defaultSubject={!isVerified ? "Verification Update Required" : ""}
+        defaultMessage={
+          !isVerified
+            ? `Hi ${userName.split(" ")[0]},\n\nWe noticed that your identity verification is incomplete. Please log in to your Racvest account and complete the required verification steps to become an active and available Racvest user.`
+            : ""
+        }
+        onMessageSent={({ method }) => {
+          showToast(`Message sent to ${userName} via ${method === "email" ? "email" : "push notification"}!`);
+        }}
+      />
 
-              <div className="space-y-1.5">
-                <label className="font-bold text-[#171713] block">
-                  Additional Notes for User (Optional):
-                </label>
-                <textarea
-                  value={reverificationNotes}
-                  onChange={(e) => setReverificationNotes(e.target.value)}
-                  placeholder="Please retake your ID in a well-lit environment and ensure all 4 corners are visible."
-                  rows={3}
-                  className="w-full p-3 rounded-xl border border-[#E3E3DC] bg-[#F7F7F3] text-xs text-[#171713] focus:outline-none focus:ring-2 focus:ring-[#014D21]"
-                />
-              </div>
+      {/* 10. Reusable Verify Identity Dialog Flow (Screens 2, 3, and 4) */}
+      <VerifyIdentityDialog
+        isOpen={isVerifyIdentityDialogOpen}
+        onClose={() => setIsVerifyIdentityDialogOpen(false)}
+        userName={userName}
+        items={[
+          { id: "liveness", label: "Liveness Check" },
+          { id: "governmentId", label: "Government ID" },
+        ]}
+        onVerified={() => {
+          handleVerifyIdentity();
+        }}
+      />
 
-              <div className="flex items-center justify-end gap-2.5 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setReverificationModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-[#E3E3DC] font-semibold text-[#171713] hover:bg-[#F7F7F3] cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-xl bg-[#DC2626] hover:bg-[#B91C1C] text-white font-semibold cursor-pointer shadow-xs"
-                >
-                  Dispatch Request
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* 11. Reusable Verify Vehicle Documents Dialog (Figma 5-item checklist) */}
+      <VerifyVehicleDialog
+        isOpen={isVerifyDocumentsDialogOpen}
+        onClose={() => setIsVerifyDocumentsDialogOpen(false)}
+        userName={userName}
+        onVerified={() => {
+          handleVerifyDocuments();
+        }}
+      />
+
+      {/* 12. Reusable Request Re-Verification Dialog (Identity / KYC) */}
+      <RequestReverificationDialog
+        isOpen={isReverifyIdentityOpen}
+        onClose={() => setIsReverifyIdentityOpen(false)}
+        userName={userName}
+        items={DEFAULT_IDENTITY_REVERIFY_ITEMS}
+        onRequestSent={({ selectedItems }) => {
+          showToast(`Re-verification request sent to ${userName} for ${selectedItems.length} items.`);
+        }}
+      />
+
+      {/* 13. Reusable Request Re-Verification Dialog (Vehicle Information - Figma Flow) */}
+      <RequestReverificationDialog
+        isOpen={isReverifyVehicleOpen}
+        onClose={() => setIsReverifyVehicleOpen(false)}
+        userName={userName}
+        items={DEFAULT_VEHICLE_REVERIFY_ITEMS}
+        defaultReason="The vehicle plate number in your submitted documents does not match the vehicle information on your account. Please update and resubmit the correct document."
+        onRequestSent={({ selectedItems }) => {
+          showToast(`Vehicle re-verification request sent to ${userName} for ${selectedItems.length} items.`);
+        }}
+      />
+
     </div>
   );
 }

@@ -5,3 +5,8 @@ export * from "./status-badge";
 export * from "./table-pagination";
 export * from "./table-toolbar";
 export * from "./top-user-distribution";
+export * from "./document-preview-dialog";
+export * from "./compare-documents-dialog";
+export * from "./send-message-dialog";
+export * from "./verify-identity-dialog";
+export * from "./request-reverification-dialog";
