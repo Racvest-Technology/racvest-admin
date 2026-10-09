@@ -12,7 +12,7 @@ export default function DashboardLayout({
       {/* Sidebar */}
       <React.Suspense
         fallback={
-          <aside className="shrink-0 bg-white border-r border-[#E3E3DC] w-[264px] h-screen sticky top-0" />
+          <aside className="shrink-0 bg-[#03170A] border-r border-[#0D2915] w-[260px] h-screen sticky top-0" />
         }
       >
         <Sidebar />
