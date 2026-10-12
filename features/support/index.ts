@@ -8,6 +8,8 @@ export * from "./components/ticket-status-breakdown";
 export * from "./components/support-category-grid";
 export * from "./components/support-sla-grid";
 export * from "./components/support-tickets-tab";
+export * from "./components/ticket-detail-drawer";
 export * from "./components/support-chat-tab";
 export * from "./components/support-sos-tab";
+export * from "./components/support-call-logs-tab";
 export * from "./components/support-history-tab";

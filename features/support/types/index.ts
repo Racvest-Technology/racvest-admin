@@ -3,6 +3,7 @@ export type SupportTabType =
   | "ticket"
   | "live_chat"
   | "sos_requests"
+  | "call_logs"
   | "resolution_history";
 
 export interface SupportKpiMetric {
@@ -43,19 +44,56 @@ export interface SlaSummaryItem {
   starIcon?: boolean;
 }
 
+export interface SupportTicketMessage {
+  id: string;
+  sender: string;
+  time: string;
+  text: string;
+  isInternal?: boolean;
+}
+
+export interface SupportTicketTimelineItem {
+  id: string;
+  time: string;
+  title: string;
+  subtitle: string;
+}
+
+export interface LinkedDeliveryContext {
+  orderCode: string;
+  description: string;
+  trackingCode: string;
+  courierName: string;
+  courierPhone: string;
+  pickup: string;
+  destination: string;
+  transactionId: string;
+  escrowAmount: string;
+  escrowStatus: string;
+}
+
 export interface SupportTicket {
   id: string;
-  ticketNumber: string;
+  ticketNumber: string; // e.g. "#TKT-10294"
   subject: string;
+  fullSubject?: string;
   customerName: string;
+  customerAvatar: string;
   customerRole: "Sender" | "Traveler" | "Recipient";
-  priority: "Urgent" | "High" | "Medium" | "Low";
-  status: "New" | "Open" | "In Progress" | "Waiting for Customer" | "Escalated" | "Resolved / Closed";
-  category: string;
-  orderCode?: string;
-  assignee?: string;
-  lastUpdated: string;
-  createdAt: string;
+  customerId?: string;
+  isVerified?: boolean;
+  category: "Delivery" | "Refund" | "Verification" | "Technical";
+  priority: "High" | "Medium" | "Low";
+  status: "In Progress" | "Resolved" | "Waiting" | "Open";
+  assignedToName: string;
+  assignedToAvatar: string;
+  lastActivity: string; // e.g. "2 mins"
+  createdAtFormatted: string; // e.g. "Oct 03"
+  fullCreatedAt?: string; // e.g. "Oct 03, 2026, 10:15 AM"
+  customerMessage?: string;
+  linkedDelivery?: LinkedDeliveryContext;
+  messages: SupportTicketMessage[];
+  timeline: SupportTicketTimelineItem[];
 }
 
 export interface LiveChatMessage {

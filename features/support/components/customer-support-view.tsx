@@ -11,6 +11,7 @@ import { SupportSlaGrid } from "./support-sla-grid";
 import { SupportTicketsTab } from "./support-tickets-tab";
 import { SupportChatTab } from "./support-chat-tab";
 import { SupportSosTab } from "./support-sos-tab";
+import { SupportCallLogsTab } from "./support-call-logs-tab";
 import { SupportHistoryTab } from "./support-history-tab";
 import {
   MOCK_SUPPORT_KPIS,
@@ -25,7 +26,7 @@ import {
 import { SupportTabType } from "../types";
 
 export function CustomerSupportView() {
-  const [activeTab, setActiveTab] = React.useState<SupportTabType>("overview");
+  const [activeTab, setActiveTab] = React.useState<SupportTabType>("ticket");
   const [dateFilter, setDateFilter] = React.useState("Last 7days");
 
   const handleRefresh = () => {
@@ -36,10 +37,12 @@ export function CustomerSupportView() {
     const reportData = {
       generatedAt: new Date().toISOString(),
       dateRange: dateFilter,
+      currentTab: activeTab,
       kpis: MOCK_SUPPORT_KPIS,
       statusBreakdown: MOCK_TICKET_STATUSES,
       categories: MOCK_SUPPORT_CATEGORIES,
       sla: MOCK_SLA_METRICS,
+      tickets: MOCK_SUPPORT_TICKETS,
     };
     const blob = new Blob([JSON.stringify(reportData, null, 2)], {
       type: "application/json",
@@ -47,17 +50,55 @@ export function CustomerSupportView() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `customer-support-report-${Date.now()}.json`;
+    link.download = `support-${activeTab}-report-${Date.now()}.json`;
     link.click();
     URL.revokeObjectURL(url);
   };
+
+  const getHeaderMeta = () => {
+    switch (activeTab) {
+      case "ticket":
+        return {
+          title: "Support Tickets",
+          subtitle: "Track, assign, investigate, and resolve structured customer issues.",
+        };
+      case "live_chat":
+        return {
+          title: "Live Chat Relays",
+          subtitle: "Real-time bidirectional communications between senders, couriers, and travelers.",
+        };
+      case "sos_requests":
+        return {
+          title: "SOS Emergency Console",
+          subtitle: "Urgent incident response, courier emergency telemetry, and rapid dispatch escalation.",
+        };
+      case "call_logs":
+        return {
+          title: "Support Call Logs",
+          subtitle: "Recorded voice logs, inbound customer inquiries, and masked carrier relays.",
+        };
+      case "resolution_history":
+        return {
+          title: "Resolution & Quality History",
+          subtitle: "Audited ticket resolutions, CSAT feedback scores, and performance milestones.",
+        };
+      case "overview":
+      default:
+        return {
+          title: "Customer Support Overview",
+          subtitle: "Manage customer issues, live conversations, safety emergencies, and resolution history.",
+        };
+    }
+  };
+
+  const headerMeta = getHeaderMeta();
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
       {/* Top Page Header matching Figma */}
       <PageHeader
-        title="Customer Support Overview"
-        subtitle="Manage customer issues, live conversations, safety emergencies, and resolution history."
+        title={headerMeta.title}
+        subtitle={headerMeta.subtitle}
         dateFilterLabel={dateFilter}
         onDateFilterClick={() => {
           setDateFilter((prev) => (prev === "Last 7days" ? "Last 30days" : "Last 7days"));
@@ -96,7 +137,7 @@ export function CustomerSupportView() {
         </div>
       )}
 
-      {/* Tickets Tab Content */}
+      {/* Tickets Tab Content (Matching Support Ticket Screenshot) */}
       {activeTab === "ticket" && (
         <SupportTicketsTab tickets={MOCK_SUPPORT_TICKETS} />
       )}
@@ -109,6 +150,11 @@ export function CustomerSupportView() {
       {/* SOS Requests Tab Content */}
       {activeTab === "sos_requests" && (
         <SupportSosTab alerts={MOCK_SOS_ALERTS} />
+      )}
+
+      {/* Call Logs Tab Content */}
+      {activeTab === "call_logs" && (
+        <SupportCallLogsTab />
       )}
 
       {/* Resolution History Tab Content */}

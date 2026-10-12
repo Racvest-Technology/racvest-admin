@@ -44,6 +44,7 @@ export function SupportTabsNavigation({
       badge: sosBadgeCount,
       badgeStyle: "bg-[#FEE2E2] text-[#DC2626]",
     },
+    { id: "call_logs", label: "Call logs" },
     { id: "resolution_history", label: "Resolution History" },
   ];
 
@@ -69,7 +70,7 @@ export function SupportTabsNavigation({
               <span
                 className={cn(
                   "w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-semibold transition-colors",
-                  tab.badgeStyle
+                  isActive ? "bg-white/20 text-white" : tab.badgeStyle
                 )}
               >
                 {tab.badge}
