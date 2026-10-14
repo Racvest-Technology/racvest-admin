@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import {
   Calendar,
-  RefreshCw,
   Search,
   Filter,
   X,
@@ -28,6 +27,7 @@ import {
   MatchType,
 } from "../data/mock-matches";
 import { BidDetailDrawer } from "./bid-detail-drawer";
+import { PageHeader, StatusBadge, TablePagination } from "@/components/shared";
 
 export function BidsMatchesView() {
   const [selectedBid, setSelectedBid] = useState<BidMatchItem | null>(null);
@@ -134,47 +134,7 @@ export function BidsMatchesView() {
     return `₦${amount.toLocaleString()}`;
   };
 
-  const renderStatusBadge = (status: MatchStatus) => {
-    switch (status) {
-      case "Awaiting Decision":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-amber-300 text-amber-700 bg-amber-50">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-            Awaiting Decision
-          </span>
-        );
-      case "Matched":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-emerald-300 text-emerald-700 bg-emerald-50">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            Matched
-          </span>
-        );
-      case "Accepted":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#062413] text-white border border-[#062413]">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            Accepted
-          </span>
-        );
-      case "Withdrawn":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-neutral-300 text-neutral-600 bg-neutral-100">
-            <span className="w-1.5 h-1.5 rounded-full bg-neutral-400" />
-            Withdrawn
-          </span>
-        );
-      case "Unmatched Request":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-rose-300 text-rose-600 bg-rose-50">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-            Unmatched Request
-          </span>
-        );
-      default:
-        return <span>{status}</span>;
-    }
-  };
+
 
   const renderTypeIcon = (type: MatchType) => {
     switch (type) {
@@ -206,39 +166,15 @@ export function BidsMatchesView() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
-            Bids &amp; Matches
-          </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-            Track bid activity and traveler matching across every open delivery.
-          </p>
-        </div>
-
-        {/* Date Filter & Refresh */}
-        <div className="flex items-center gap-2.5">
-          <div className="relative">
-            <button
-              onClick={() => setOpenDropdown(openDropdown === "date" ? null : "date")}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-neutral-200 bg-white text-xs font-medium text-neutral-700 hover:bg-neutral-50 shadow-xs transition-colors"
-            >
-              <Calendar className="w-3.5 h-3.5 text-neutral-500" />
-              <span>Last 7days</span>
-              <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
-            </button>
-          </div>
-
-          <button
-            onClick={() => handleResetFilters()}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-neutral-200 bg-white text-xs font-medium text-neutral-700 hover:bg-neutral-50 shadow-xs transition-colors"
-          >
-            <RefreshCw className="w-3.5 h-3.5 text-neutral-500" />
-            <span>Refresh</span>
-          </button>
-        </div>
-      </div>
+      {/* DRY Page Header */}
+      <PageHeader
+        title="Bids & Matches"
+        subtitle="Track bid activity and traveler matching across every open delivery."
+        dateFilterLabel="Last 7days"
+        onDateFilterClick={() => setOpenDropdown(openDropdown === "date" ? null : "date")}
+        onRefresh={handleResetFilters}
+        showDownloadReport={false}
+      />
 
       {/* KPI Metric Cards */}
       {/* Row 1: 4 Cards */}
@@ -652,7 +588,7 @@ export function BidsMatchesView() {
 
                     {/* STATUS */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      {renderStatusBadge(bid.status)}
+                      <StatusBadge status={bid.status} />
                     </td>
 
                     {/* TYPE */}
@@ -699,56 +635,17 @@ export function BidsMatchesView() {
           </table>
         </div>
 
-        {/* Pagination Footer */}
-        <div className="p-4 border-t border-neutral-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-neutral-500">
-          <div>
-            Showing{" "}
-            <span className="font-semibold text-neutral-800">
-              {paginatedBids.length}
-            </span>{" "}
-            Of{" "}
-            <span className="font-semibold text-neutral-800">
-              {filteredBids.length}
-            </span>{" "}
-            result
-          </div>
-
-          <div className="flex items-center gap-1.5 self-center sm:self-auto">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="px-3 py-1.5 rounded-lg border border-neutral-200 text-neutral-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
-            >
-              &larr; Prev
-            </button>
-
-            {Array.from({ length: totalPages }).map((_, idx) => {
-              const pageNumber = idx + 1;
-              const isActive = pageNumber === currentPage;
-              return (
-                <button
-                  key={pageNumber}
-                  onClick={() => setCurrentPage(pageNumber)}
-                  className={`w-7 h-7 rounded-lg text-xs font-medium transition-colors ${
-                    isActive
-                      ? "bg-neutral-100 text-neutral-900 font-bold"
-                      : "text-neutral-600 hover:bg-neutral-50"
-                  }`}
-                >
-                  {pageNumber}
-                </button>
-              );
-            })}
-
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1.5 rounded-lg border border-[#062413] bg-[#062413] text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#062413]/90 transition-colors"
-            >
-              Next &rarr;
-            </button>
-          </div>
-        </div>
+        {/* DRY Table Pagination */}
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredBids.length}
+          pageSize={pageSize}
+          countLabel={`Showing ${paginatedBids.length} Of ${filteredBids.length} result`}
+          nextVariant="primary"
+          onPageChange={setCurrentPage}
+          className="p-4 border-t border-neutral-100"
+        />
       </div>
 
       {/* Slide-over Drawer */}

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { SupportTicket, SupportTicketMessage } from "../types";
 import { cn } from "@/lib/utils";
+import { StatusBadge } from "@/components/shared";
 
 interface TicketDetailDrawerProps {
   ticket: SupportTicket | null;
@@ -99,35 +100,8 @@ export function TicketDetailDrawer({
                   {ticket.ticketNumber}
                 </span>
 
-                <span
-                  className={cn(
-                    "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border",
-                    currentStatus === "In Progress"
-                      ? "bg-[#ECFDF3] text-[#16A34A] border-[#D1FAE0]"
-                      : currentStatus === "Resolved"
-                      ? "bg-[#F7F7F3] text-[#85857B] border-[#E3E3DC]"
-                      : currentStatus === "Waiting"
-                      ? "bg-[#EFF6FA] text-[#0284C7] border-[#DCECF3]"
-                      : "bg-[#FFF8E7] text-[#D97706] border-[#FDECC8]"
-                  )}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                  {currentStatus}
-                </span>
-
-                <span
-                  className={cn(
-                    "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border",
-                    currentPriority === "High"
-                      ? "bg-[#FEF2F0] text-[#EF4444] border-[#FDE0DB]"
-                      : currentPriority === "Medium"
-                      ? "bg-[#ECFDF3] text-[#10B981] border-[#D1FAE0]"
-                      : "bg-[#F7F7F3] text-[#85857B] border-[#E3E3DC]"
-                  )}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                  {currentPriority}
-                </span>
+                <StatusBadge status={currentStatus} />
+                <StatusBadge status={currentPriority} />
               </div>
 
               <div className="flex items-center gap-2 relative">

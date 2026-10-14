@@ -5,92 +5,113 @@ import { cn } from "@/lib/utils";
 
 export interface StatusBadgeProps {
   status: string;
+  label?: string;
   dot?: boolean;
   className?: string;
 }
 
-export function StatusBadge({ status, dot = true, className }: StatusBadgeProps) {
+export function StatusBadge({
+  status,
+  label,
+  dot = true,
+  className,
+}: StatusBadgeProps) {
   const normalized = status.toLowerCase().trim();
 
-  // Delivered: In Figma, it has a distinct solid dark green pill or high-contrast green
-  const isDelivered = normalized === "delivered";
+  // Solid dark green pill (Delivered, Accepted)
+  const isSolidDarkGreen =
+    normalized === "delivered" || normalized === "accepted";
 
-  // Active / Verified / Safe / Completed
+  // Light green / Success (Active, Verified, Completed, Passed, Matched, In Progress, Medium)
   const isGreen =
     normalized === "active" ||
     normalized === "verified" ||
     normalized === "safe" ||
     normalized === "completed" ||
     normalized === "passed" ||
-    normalized === "on";
+    normalized === "on" ||
+    normalized === "matched" ||
+    normalized === "in progress" ||
+    normalized === "medium";
 
-  // Blue/Teal: In Transit, Picked Up
-  const isTeal =
+  // Blue / Info / Teal (In Transit, Picked Up, Waiting, New)
+  const isBlue =
     normalized === "in transit" ||
     normalized === "picked up" ||
-    normalized === "pickedup";
+    normalized === "pickedup" ||
+    normalized === "waiting" ||
+    normalized === "waiting for customer" ||
+    normalized === "new";
 
-  // Amber / Warning / Pending / Suspended
+  // Amber / Warning (Pending, Review, Suspended, Open, Awaiting Decision)
   const isAmber =
     normalized === "pending" ||
     normalized === "suspended" ||
     normalized === "review" ||
-    normalized === "in progress" ||
     normalized === "flagged" ||
-    normalized === "off";
+    normalized === "off" ||
+    normalized === "open" ||
+    normalized === "awaiting decision";
 
-  // Red / Error / Banned / Cancelled / Disputed / Rejected
+  // Red / Danger (High, Urgent, Banned, Cancelled, Disputed, Rejected, Escalated, Unmatched Request)
   const isRed =
+    normalized === "high" ||
+    normalized === "urgent" ||
     normalized === "banned" ||
     normalized === "cancelled" ||
     normalized === "disputed" ||
     normalized === "rejected" ||
     normalized === "high risk" ||
-    normalized === "failed";
+    normalized === "failed" ||
+    normalized === "escalated" ||
+    normalized === "unmatched request";
 
-  // Purple / Inactive
-  const isPurple = normalized === "inactive";
+  // Neutral / Gray / Muted (Low, Resolved, Withdrawn, Inactive)
+  const isNeutral =
+    normalized === "low" ||
+    normalized === "resolved" ||
+    normalized === "resolved / closed" ||
+    normalized === "withdrawn" ||
+    normalized === "inactive";
 
-  const colorStyles = isDelivered
-    ? "bg-[#01250F] text-white"
+  const colorStyles = isSolidDarkGreen
+    ? "bg-[#062413] text-white border border-[#062413]"
     : isGreen
-    ? "bg-[#E6F1EB] text-[#014D21]"
-    : normalized === "in transit"
-    ? "bg-[#E6F1EB] text-[#014D21] border border-[#9BC7AD]"
-    : isTeal
-    ? "bg-[#EFF6FA] text-[#277A9E]"
+    ? "bg-[#ECFDF3] text-[#10B981] border border-[#D1FAE0]"
+    : isBlue
+    ? "bg-[#EFF6FA] text-[#0284C7] border border-[#DCECF3]"
     : isAmber
-    ? "bg-[#FFF4E5] text-[#DC851F]"
+    ? "bg-[#FFF8E7] text-[#D97706] border border-[#FDECC8]"
     : isRed
-    ? "bg-[#FEF2F0] text-[#C83B2B]"
-    : isPurple
-    ? "bg-[#F3E8FF] text-[#7E22CE]"
-    : "bg-[#F7F7F3] text-[#85857B]";
+    ? "bg-[#FEF2F0] text-[#EF4444] border-[#FDE0DB]"
+    : isNeutral
+    ? "bg-[#F7F7F3] text-[#85857B] border-[#E3E3DC]"
+    : "bg-[#F7F7F3] text-[#85857B] border-[#E3E3DC]";
 
-  const dotColor = isDelivered
+  const dotColor = isSolidDarkGreen
     ? "bg-[#29CC6A]"
-    : isGreen || normalized === "in transit"
-    ? "bg-[#014D21]"
-    : isTeal
-    ? "bg-[#277A9E]"
+    : isGreen
+    ? "bg-[#10B981]"
+    : isBlue
+    ? "bg-[#0284C7]"
     : isAmber
-    ? "bg-[#DC851F]"
+    ? "bg-[#D97706]"
     : isRed
-    ? "bg-[#C83B2B]"
-    : isPurple
-    ? "bg-[#7E22CE]"
+    ? "bg-[#EF4444]"
     : "bg-[#85857B]";
+
+  const displayText = label || status;
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold font-body shrink-0",
+        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold font-body shrink-0 border",
         colorStyles,
         className
       )}
     >
       {dot && <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", dotColor)} />}
-      <span className="capitalize">{status}</span>
+      <span>{displayText}</span>
     </span>
   );
 }

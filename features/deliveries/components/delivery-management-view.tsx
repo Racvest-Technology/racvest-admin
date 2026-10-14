@@ -4,14 +4,10 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Calendar,
-  RotateCw,
   Search,
   Filter,
   Eye,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   Package,
   Truck,
   Clock,
@@ -21,19 +17,16 @@ import {
   Box,
 } from "lucide-react";
 import { mockDeliveries } from "@/lib/mock-data";
+import { PageHeader, StatusBadge, TablePagination } from "@/components/shared";
 
 export function DeliveryManagementView() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedStatus, setSelectedStatus] = React.useState("all");
   const [selectedPackageType, setSelectedPackageType] = React.useState("all");
   const [selectedDate, setSelectedDate] = React.useState("7d");
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   const handleRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 600);
+    // Refresh deliveries state
   };
 
   const filteredDeliveries = React.useMemo(() => {
@@ -59,93 +52,19 @@ export function DeliveryManagementView() {
     });
   }, [searchQuery, selectedStatus, selectedPackageType]);
 
-  const getStatusBadge = (status: string) => {
-    const s = status.toLowerCase();
-    if (s.includes("in transit")) {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#E6F1EB] text-[#014D21]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#014D21]" />
-          In Transit
-        </span>
-      );
-    }
-    if (s.includes("delivered") || s.includes("completed")) {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#EBF5EE] text-[#0A642F]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#0A642F]" />
-          {status}
-        </span>
-      );
-    }
-    if (s.includes("picked up")) {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#EDF5FD] text-[#1E40AF]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#1E40AF]" />
-          Picked Up
-        </span>
-      );
-    }
-    if (s.includes("pending")) {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#FFF7ED] text-[#C2410C]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C2410C]" />
-          Pending
-        </span>
-      );
-    }
-    if (s.includes("disputed") || s.includes("cancelled")) {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#FEF2F0] text-[#DC2626]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
-          {status}
-        </span>
-      );
-    }
-    return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">
-        {status}
-      </span>
-    );
-  };
+
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto pb-16 font-body">
-      {/* 1. Header with Title and Global Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-[#171713] font-heading">
-            Delivery Management
-          </h1>
-          <p className="text-xs text-[#85857B] mt-0.5 font-medium">
-            Monitor and manage all deliveries across the platform.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          {/* Date Picker Button */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setSelectedDate(selectedDate === "7d" ? "30d" : "7d")}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[#E3E3DC] bg-white text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] transition-colors shadow-2xs cursor-pointer"
-            >
-              <Calendar className="w-3.5 h-3.5 text-[#85857B]" />
-              <span>{selectedDate === "7d" ? "Last 7days" : "Last 30days"}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-[#85857B]" />
-            </button>
-          </div>
-
-          {/* Refresh Button */}
-          <button
-            type="button"
-            onClick={handleRefresh}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E3E3DC] bg-white text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] transition-colors shadow-2xs cursor-pointer"
-          >
-            <RotateCw className={`w-3.5 h-3.5 text-[#171713] ${isRefreshing ? "animate-spin" : ""}`} />
-            <span>Refresh</span>
-          </button>
-        </div>
-      </div>
+      {/* 1. DRY Page Header with Title and Global Actions */}
+      <PageHeader
+        title="Delivery Management"
+        subtitle="Monitor and manage all deliveries across the platform."
+        dateFilterLabel={selectedDate === "7d" ? "Last 7days" : "Last 30days"}
+        onDateFilterClick={() => setSelectedDate(selectedDate === "7d" ? "30d" : "7d")}
+        onRefresh={handleRefresh}
+        downloadLabel="Download report"
+      />
 
       {/* 2. 8 KPI Metric Cards (2 rows of 4 matching Figma) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -428,7 +347,7 @@ export function DeliveryManagementView() {
 
                   {/* Status */}
                   <td className="px-4 py-3.5 whitespace-nowrap">
-                    {getStatusBadge(delivery.status)}
+                    <StatusBadge status={delivery.status} />
                   </td>
 
                   {/* Last Updated */}
@@ -452,47 +371,17 @@ export function DeliveryManagementView() {
           </table>
         </div>
 
-        {/* Table Footer with Pagination */}
-        <div className="px-5 py-4 border-t border-[#E3E3DC] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-xs">
-          <span className="text-[#85857B] font-medium">
-            Showing 6 Of 2000 result
-          </span>
-
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              className="px-2.5 py-1.5 rounded-lg border border-[#E3E3DC] bg-white text-xs font-semibold text-[#85857B] hover:bg-[#F7F7F3] flex items-center gap-1 cursor-pointer"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Prev</span>
-            </button>
-            <button
-              type="button"
-              className="w-8 h-8 rounded-lg bg-[#014D21] text-white text-xs font-bold flex items-center justify-center shadow-xs cursor-pointer"
-            >
-              1
-            </button>
-            <button
-              type="button"
-              className="w-8 h-8 rounded-lg border border-[#E3E3DC] bg-white text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] flex items-center justify-center cursor-pointer"
-            >
-              2
-            </button>
-            <button
-              type="button"
-              className="w-8 h-8 rounded-lg border border-[#E3E3DC] bg-white text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] flex items-center justify-center cursor-pointer"
-            >
-              3
-            </button>
-            <button
-              type="button"
-              className="px-3 py-1.5 rounded-lg bg-[#014D21] hover:bg-[#01451E] text-white text-xs font-semibold flex items-center gap-1 shadow-xs cursor-pointer"
-            >
-              <span>Next</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
+        {/* DRY Table Pagination */}
+        <TablePagination
+          currentPage={1}
+          totalPages={3}
+          totalItems={2000}
+          pageSize={6}
+          countLabel="Showing 6 Of 2000 result"
+          nextVariant="primary"
+          onPageChange={() => {}}
+          className="px-5 py-4 border-t border-[#E3E3DC]"
+        />
       </div>
     </div>
   );

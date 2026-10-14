@@ -2,17 +2,11 @@
 
 import * as React from "react";
 import Image from "next/image";
-import {
-  Search,
-  Filter,
-  Eye,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Search, Filter, Eye, ChevronDown } from "lucide-react";
 import { SupportTicket } from "../types";
 import { TicketDetailDrawer } from "./ticket-detail-drawer";
-import { cn } from "@/lib/utils";
+
+import { StatusBadge, TablePagination } from "@/components/shared";
 
 interface SupportTicketsTabProps {
   tickets: SupportTicket[];
@@ -68,34 +62,6 @@ export function SupportTicketsTab({ tickets }: SupportTicketsTabProps) {
     setTicketList((prev) =>
       prev.map((t) => (t.id === ticketId ? { ...t, priority: newPriority } : t))
     );
-  };
-
-  const getPriorityBadge = (priority: SupportTicket["priority"]) => {
-    switch (priority) {
-      case "High":
-        return "bg-[#FEF2F0] text-[#EF4444] border-[#FDE0DB]";
-      case "Medium":
-        return "bg-[#ECFDF3] text-[#10B981] border-[#D1FAE0]";
-      case "Low":
-        return "bg-[#F7F7F3] text-[#85857B] border-[#E3E3DC]";
-      default:
-        return "bg-[#F7F7F3] text-[#85857B] border-[#E3E3DC]";
-    }
-  };
-
-  const getStatusBadge = (status: SupportTicket["status"]) => {
-    switch (status) {
-      case "In Progress":
-        return "bg-[#ECFDF3] text-[#16A34A] border-[#D1FAE0]";
-      case "Resolved":
-        return "bg-[#F7F7F3] text-[#85857B] border-[#E3E3DC]";
-      case "Waiting":
-        return "bg-[#EFF6FA] text-[#0284C7] border-[#DCECF3]";
-      case "Open":
-        return "bg-[#FFF8E7] text-[#D97706] border-[#FDECC8]";
-      default:
-        return "bg-[#F7F7F3] text-[#85857B] border-[#E3E3DC]";
-    }
   };
 
   return (
@@ -237,28 +203,12 @@ export function SupportTicketsTab({ tickets }: SupportTicketsTabProps) {
 
                   {/* Priority */}
                   <td className="px-5 py-4">
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border",
-                        getPriorityBadge(tkt.priority)
-                      )}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                      {tkt.priority}
-                    </span>
+                    <StatusBadge status={tkt.priority} />
                   </td>
 
                   {/* Status */}
                   <td className="px-5 py-4">
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border",
-                        getStatusBadge(tkt.status)
-                      )}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                      {tkt.status}
-                    </span>
+                    <StatusBadge status={tkt.status} />
                   </td>
 
                   {/* Assigned To */}
@@ -317,47 +267,17 @@ export function SupportTicketsTab({ tickets }: SupportTicketsTabProps) {
           </table>
         </div>
 
-        {/* Footer with counts & pagination matching Image 1 */}
-        <div className="p-4 border-t border-[#E3E3DC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#85857B]">
-          <span>Showing 6 Of 2000 deliveries</span>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="px-2.5 py-1 text-xs font-medium text-[#66665D] hover:text-[#171713] disabled:opacity-40 cursor-pointer flex items-center gap-1"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Prev</span>
-            </button>
-
-            {[1, 2, 3].map((page) => (
-              <button
-                key={page}
-                type="button"
-                onClick={() => setCurrentPage(page)}
-                className={cn(
-                  "w-7 h-7 rounded-lg text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center",
-                  currentPage === page
-                    ? "bg-[#0B331E] text-white"
-                    : "text-[#66665D] hover:bg-[#F7F7F3]"
-                )}
-              >
-                {page}
-              </button>
-            ))}
-
-            <button
-              type="button"
-              onClick={() => setCurrentPage((p) => Math.min(3, p + 1))}
-              className="px-3 py-1.5 bg-[#0B331E] hover:bg-[#062414] text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1"
-            >
-              <span>Next</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
+        {/* Footer with counts & pagination using shared DRY TablePagination */}
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={3}
+          totalItems={2000}
+          pageSize={6}
+          countLabel="Showing 6 Of 2000 deliveries"
+          nextVariant="primary"
+          onPageChange={setCurrentPage}
+          className="p-4"
+        />
       </div>
 
       {/* Ticket Detail Drawer Slide-over */}

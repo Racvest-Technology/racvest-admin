@@ -10,6 +10,8 @@ export interface TablePaginationProps {
   totalItems: number;
   pageSize?: number;
   itemLabel?: string;
+  countLabel?: string;
+  nextVariant?: "default" | "primary";
   onPageChange: (page: number) => void;
   className?: string;
 }
@@ -20,6 +22,8 @@ export function TablePagination({
   totalItems,
   pageSize = 10,
   itemLabel = "items",
+  countLabel,
+  nextVariant = "default",
   onPageChange,
   className,
 }: TablePaginationProps) {
@@ -47,8 +51,21 @@ export function TablePagination({
       )}
     >
       <div>
-        Showing <span className="font-semibold text-[#171713]">{startItem}-{endItem}</span> of{" "}
-        <span className="font-semibold text-[#171713]">{totalItems.toLocaleString()}</span> {itemLabel}
+        {countLabel ? (
+          <span>{countLabel}</span>
+        ) : (
+          <>
+            Showing{" "}
+            <span className="font-semibold text-[#171713]">
+              {startItem}-{endItem}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-[#171713]">
+              {totalItems.toLocaleString()}
+            </span>{" "}
+            {itemLabel}
+          </>
+        )}
       </div>
 
       <div className="flex items-center gap-1.5">
@@ -72,7 +89,7 @@ export function TablePagination({
               type="button"
               onClick={() => onPageChange(p)}
               className={cn(
-                "w-8 h-8 rounded-lg text-xs font-semibold flex items-center justify-center transition-colors cursor-pointer",
+                "w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-xs font-semibold flex items-center justify-center transition-colors cursor-pointer",
                 isActive
                   ? "bg-[#014D21] text-white shadow-xs font-bold"
                   : "bg-white border border-[#E3E3DC] text-[#171713] hover:bg-[#F7F7F3] shadow-2xs"
@@ -88,7 +105,12 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage >= totalPages}
-          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#E3E3DC] bg-white text-xs font-semibold text-[#171713] hover:bg-[#F7F7F3] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer shadow-2xs"
+          className={cn(
+            "inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer shadow-2xs",
+            nextVariant === "primary"
+              ? "bg-[#014D21] text-white border border-[#014D21] hover:bg-[#013A19]"
+              : "border border-[#E3E3DC] bg-white text-[#171713] hover:bg-[#F7F7F3]"
+          )}
         >
           <span>Next</span>
           <ChevronRight className="w-3.5 h-3.5" />
