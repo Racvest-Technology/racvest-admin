@@ -1,62 +1,23 @@
 "use client";
 
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import type { AuthUser } from "@/features/auth/types";
-import { setClientAccessToken } from "@/lib/api-client";
+import { useAppStore } from "./app-store";
+import { type AuthSlice, type AuthState } from "./slices/auth-slice";
 
-export interface AuthState {
-  user: AuthUser | null;
-  accessToken: string | null;
-  isAuthenticated: boolean;
-  setSession: (user: AuthUser, accessToken?: string | null) => void;
-  clearSession: () => void;
-}
+export type { AuthSlice, AuthState };
 
 /**
- * Global Authentication Store powered by Zustand with persistence
+ * Auth store hook backed by the combined Zustand slice store
  */
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      accessToken: null,
-      isAuthenticated: false,
-      setSession: (user, accessToken) => {
-        const token = accessToken ?? null;
-        setClientAccessToken(token);
-        set({
-          user,
-          accessToken: token,
-          isAuthenticated: true,
-        });
-      },
-      clearSession: () => {
-        setClientAccessToken(null);
-        set({
-          user: null,
-          accessToken: null,
-          isAuthenticated: false,
-        });
-      },
-    }),
-    {
-      name: "racvest-auth-storage",
-      partialize: (state) => ({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-      }),
-    }
-  )
-);
+export const useAuthStore = useAppStore;
 
 /**
  * Imperative store handle for non-component callers
  */
 export const authStore = {
-  getSnapshot: () => useAuthStore.getState(),
-  subscribe: useAuthStore.subscribe,
+  getSnapshot: () => useAppStore.getState(),
+  subscribe: useAppStore.subscribe,
   setSession: (user: AuthUser, accessToken?: string | null) =>
-    useAuthStore.getState().setSession(user, accessToken),
-  clearSession: () => useAuthStore.getState().clearSession(),
+    useAppStore.getState().setSession(user, accessToken),
+  clearSession: () => useAppStore.getState().clearSession(),
 };

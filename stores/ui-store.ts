@@ -1,58 +1,26 @@
 "use client";
 
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { useAppStore } from "./app-store";
+import { type UISlice, type UIState } from "./slices/ui-slice";
 
-export interface UIState {
-  sidebarOpen: boolean;
-  activeModal: string | null;
-  selectedDispatchCourierId: string | null;
-  setSidebarOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
-  toggleSidebar: () => void;
-  openModal: (modalId: string) => void;
-  closeModal: () => void;
-  setSelectedDispatchCourier: (courierId: string | null) => void;
-}
+export type { UISlice, UIState };
 
 /**
- * Global UI Store powered by Zustand
+ * UI store hook backed by the combined Zustand slice store
  */
-export const useUIStore = create<UIState>()(
-  persist(
-    (set) => ({
-      sidebarOpen: true,
-      activeModal: null,
-      selectedDispatchCourierId: null,
-      setSidebarOpen: (open) =>
-        set((state) => ({
-          sidebarOpen:
-            typeof open === "function" ? open(state.sidebarOpen) : open,
-        })),
-      toggleSidebar: () =>
-        set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-      openModal: (modalId) => set({ activeModal: modalId }),
-      closeModal: () => set({ activeModal: null }),
-      setSelectedDispatchCourier: (courierId) =>
-        set({ selectedDispatchCourierId: courierId }),
-    }),
-    {
-      name: "racvest-ui-storage",
-      partialize: (state) => ({ sidebarOpen: state.sidebarOpen }),
-    }
-  )
-);
+export const useUIStore = useAppStore;
 
 /**
  * Imperative store actions for event listeners / outside-component usage
  */
 export const uiStore = {
-  getSnapshot: () => useUIStore.getState(),
-  subscribe: useUIStore.subscribe,
+  getSnapshot: () => useAppStore.getState(),
+  subscribe: useAppStore.subscribe,
   setSidebarOpen: (open: boolean | ((prev: boolean) => boolean)) =>
-    useUIStore.getState().setSidebarOpen(open),
-  toggleSidebar: () => useUIStore.getState().toggleSidebar(),
-  openModal: (modalId: string) => useUIStore.getState().openModal(modalId),
-  closeModal: () => useUIStore.getState().closeModal(),
+    useAppStore.getState().setSidebarOpen(open),
+  toggleSidebar: () => useAppStore.getState().toggleSidebar(),
+  openModal: (modalId: string) => useAppStore.getState().openModal(modalId),
+  closeModal: () => useAppStore.getState().closeModal(),
   setSelectedDispatchCourier: (courierId: string | null) =>
-    useUIStore.getState().setSelectedDispatchCourier(courierId),
+    useAppStore.getState().setSelectedDispatchCourier(courierId),
 };
