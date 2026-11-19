@@ -1,5 +1,4 @@
-import type { StateCreator } from "zustand";
-import type { AuthSlice } from "./auth-slice";
+import type { AppSliceCreator } from "../types";
 
 export interface UISlice {
   sidebarOpen: boolean;
@@ -12,17 +11,7 @@ export interface UISlice {
   setSelectedDispatchCourier: (courierId: string | null) => void;
 }
 
-export type UIState = UISlice;
-
-/**
- * UI slice creator following the Zustand slice pattern
- */
-export const createUISlice: StateCreator<
-  AuthSlice & UISlice,
-  [["zustand/persist", unknown]],
-  [],
-  UISlice
-> = (set) => ({
+export const createUISlice: AppSliceCreator<UISlice> = (set) => ({
   sidebarOpen: true,
   activeModal: null,
   selectedDispatchCourierId: null,

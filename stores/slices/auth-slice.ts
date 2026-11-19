@@ -1,7 +1,6 @@
-import type { StateCreator } from "zustand";
 import type { AuthUser } from "@/features/auth/types";
 import { setClientAccessToken } from "@/lib/api-client";
-import type { UISlice } from "./ui-slice";
+import type { AppSliceCreator } from "../types";
 
 export interface AuthSlice {
   user: AuthUser | null;
@@ -11,17 +10,7 @@ export interface AuthSlice {
   clearSession: () => void;
 }
 
-export type AuthState = AuthSlice;
-
-/**
- * Auth slice creator following the Zustand slice pattern
- */
-export const createAuthSlice: StateCreator<
-  AuthSlice & UISlice,
-  [["zustand/persist", unknown]],
-  [],
-  AuthSlice
-> = (set) => ({
+export const createAuthSlice: AppSliceCreator<AuthSlice> = (set) => ({
   user: null,
   accessToken: null,
   isAuthenticated: false,
