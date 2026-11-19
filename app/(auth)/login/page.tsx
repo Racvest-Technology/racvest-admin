@@ -66,7 +66,7 @@ export default function LoginPage() {
                 htmlFor="username"
                 className="block text-xs font-semibold text-[#171713]"
               >
-                Username or Email Adress
+                Username or Email Address
               </label>
               <Input
                 id="username"
