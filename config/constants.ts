@@ -25,3 +25,17 @@ export const CURRENCY = {
   symbol: "₦",
   locale: "en-NG",
 } as const;
+
+export const AUTH_COOKIES = {
+  accessToken: "racvest_access_token",
+  refreshToken: "racvest_refresh_token",
+  userSession: "racvest_admin_user",
+} as const;
+
+export const API_ENDPOINTS = {
+  auth: {
+    login: "/auth/login",
+    logout: "/auth/logout",
+    refresh: "/auth/refresh",
+  },
+} as const;

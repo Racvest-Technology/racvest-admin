@@ -2,9 +2,11 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Logo, LogoMark } from "@/components/ui/logo";
-import { useUIStore, uiStore } from "@/stores";
+import { useUIStore, useAuthStore } from "@/stores";
+import { logoutAction } from "@/features/auth";
 import {
   House,
   Users,
@@ -289,19 +291,31 @@ const navigationSections: NavSection[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { sidebarOpen } = useUIStore();
+  const router = useRouter();
+  const sidebarOpen = useUIStore((state) => state.sidebarOpen);
+  const setSidebarOpen = useUIStore((state) => state.setSidebarOpen);
+  const toggleSidebar = useUIStore((state) => state.toggleSidebar);
+  const clearSession = useAuthStore((state) => state.clearSession);
+
+  const handleLogout = async () => {
+    await logoutAction();
+    clearSession();
+    toast.success("Logged out successfully");
+    router.push("/login");
+    router.refresh();
+  };
 
   // Keyboard shortcut: Cmd/Ctrl + B to toggle sidebar collapse
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") {
         e.preventDefault();
-        uiStore.toggleSidebar();
+        toggleSidebar();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [toggleSidebar]);
 
   const isItemActive = (href: string) => {
     const itemPath = href.split("?")[0];
@@ -340,7 +354,7 @@ export function Sidebar() {
             {/* Collapse Trigger Button (Amber rectangular button with <) */}
             <button
               type="button"
-              onClick={() => uiStore.setSidebarOpen(false)}
+              onClick={() => setSidebarOpen(false)}
               className="w-6 h-6 rounded-md bg-[#B86E18] hover:bg-[#A35E10] active:bg-[#8A4D0B] text-white flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-xs cursor-pointer"
               aria-label="Collapse navbar"
               title="Collapse navbar (⌘B)"
@@ -360,7 +374,7 @@ export function Sidebar() {
             {/* Expand Trigger Button (Amber rectangular button with >) */}
             <button
               type="button"
-              onClick={() => uiStore.setSidebarOpen(true)}
+              onClick={() => setSidebarOpen(true)}
               className="w-6 h-6 rounded-md bg-[#B86E18] hover:bg-[#A35E10] active:bg-[#8A4D0B] text-white flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-xs cursor-pointer"
               aria-label="Expand navbar"
               title="Expand navbar (⌘B)"
@@ -472,10 +486,11 @@ export function Sidebar() {
 
         {/* Log Out */}
         <div className="relative group">
-          <Link
-            href="/login"
+          <button
+            type="button"
+            onClick={handleLogout}
             className={cn(
-              "flex items-center rounded-lg transition-colors text-[#EA3829] hover:bg-red-500/10 text-[13.5px]",
+              "w-full flex items-center rounded-lg transition-colors text-[#EA3829] hover:bg-red-500/10 text-[13.5px] cursor-pointer",
               sidebarOpen ? "px-3 py-2 gap-3" : "p-2 justify-center"
             )}
             title={!sidebarOpen ? "Log Out" : undefined}
@@ -486,7 +501,7 @@ export function Sidebar() {
                 Log Out
               </span>
             )}
-          </Link>
+          </button>
 
           {!sidebarOpen && (
             <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 hidden group-hover:flex items-center bg-[#EA3829] text-white text-xs font-semibold rounded-lg shadow-xl px-2.5 py-1.5 z-50 whitespace-nowrap pointer-events-none">

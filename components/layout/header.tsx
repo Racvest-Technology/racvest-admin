@@ -2,8 +2,15 @@
 
 import * as React from "react";
 import { Search, Bell, ChevronDown } from "lucide-react";
+import { useAuthStore } from "@/stores";
 
 export function Header() {
+  const user = useAuthStore((state) => state.user);
+
+  const displayName = user?.name || "Emmanuel";
+  const displayEmail = user?.email || "emmanuel.lewis@example.com";
+  const avatarInitial = displayName.charAt(0).toUpperCase();
+
   return (
     <header className="h-16 px-8 bg-white border-b border-[#E3E3DC] flex items-center justify-between sticky top-0 z-30">
       {/* Search Input matching Figma */}
@@ -31,14 +38,14 @@ export function Header() {
         {/* User Profile Pill */}
         <div className="flex items-center gap-2.5 pl-2 py-1 cursor-pointer group">
           <div className="w-8 h-8 rounded-full bg-[#014D21] text-white font-semibold text-xs flex items-center justify-center shrink-0 shadow-xs">
-            E
+            {avatarInitial}
           </div>
           <div className="flex flex-col text-left">
             <span className="text-xs font-semibold text-[#171713] leading-tight font-body">
-              Emmanuel
+              {displayName}
             </span>
             <span className="text-[10px] text-[#85857B] leading-tight font-body">
-              emmanuel.lewis@example.com
+              {displayEmail}
             </span>
           </div>
           <ChevronDown className="w-3.5 h-3.5 text-[#85857B] group-hover:text-[#171713] transition-transform ml-0.5" />
