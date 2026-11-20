@@ -22,7 +22,7 @@ function LoginFormContent() {
     "callbackUrl",
     parseAsString.withDefault("/")
   );
-  const [emailParam, setEmailParam] = useQueryState(
+  const [emailParam] = useQueryState(
     "email",
     parseAsString.withDefault("")
   );
@@ -72,13 +72,12 @@ function LoginFormContent() {
         setSession(result.user, result.accessToken);
       }
 
-      // Clear any prefilled email param from URL before navigating
-      if (emailParam) {
-        void setEmailParam(null);
-      }
-
       const safeRedirect =
-        callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/";
+        callbackUrl &&
+        callbackUrl.startsWith("/") &&
+        !callbackUrl.startsWith("/.well-known")
+          ? callbackUrl
+          : "/";
 
       toast.success(
         result.message ?? "Welcome back! Redirecting to operations portal..."

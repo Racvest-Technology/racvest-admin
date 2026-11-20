@@ -62,9 +62,10 @@ export const config = {
      * - api (Route Handlers)
      * - _next/static (static files)
      * - _next/image (image optimization files)
+     * - .well-known (Chrome DevTools, Apple/Android app associations, etc.)
      * - favicon.ico, sitemap.xml, robots.txt
-     * - public assets (.svg, .png, .jpg, .jpeg, .webp, .gif, .ico)
+     * - public assets (.svg, .png, .jpg, .jpeg, .webp, .gif, .ico, .json)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|webp|gif|ico)$).*)",
+    "/((?!api|_next/static|_next/image|\\.well-known|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|webp|gif|ico|json)$).*)",
   ],
 };
