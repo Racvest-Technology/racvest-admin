@@ -9,12 +9,17 @@ import {
   type AuthSession,
   type AuthUser,
   type LoginInput,
+  type LoginResponse,
+  type LoginStatus,
 } from "../types";
 
 /**
  * Helper to safely read string fields from dynamic backend response payloads
  */
-function pickString(obj: Record<string, unknown> | undefined, keys: string[]): string | undefined {
+function pickString(
+  obj: Record<string, unknown> | undefined,
+  keys: string[]
+): string | undefined {
   if (!obj) return undefined;
   for (const key of keys) {
     const val = obj[key];
@@ -26,44 +31,73 @@ function pickString(obj: Record<string, unknown> | undefined, keys: string[]): s
 }
 
 /**
- * Normalizes flexible backend response structures from `POST https://api.racvest.xyz/auth/login`
+ * Normalizes `LoginResponse` from `POST https://api.racvest.xyz/auth/login`
+ * Example response:
+ * {
+ *   "status": "AUTHENTICATED",
+ *   "accessToken": "string",
+ *   "refreshToken": "string",
+ *   "sessionId": "string",
+ *   "sessionExpiresInSeconds": 0,
+ *   "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+ * }
  */
-function normalizeLoginResponse(raw: unknown, fallbackEmail: string): AuthSession {
-  const root = (typeof raw === "object" && raw !== null ? raw : {}) as Record<string, unknown>;
+function normalizeLoginResponse(
+  raw: unknown,
+  fallbackIdentifier: string
+): AuthSession {
+  const root = (
+    typeof raw === "object" && raw !== null ? raw : {}
+  ) as Record<string, unknown>;
   const nestedData = (
     typeof root.data === "object" && root.data !== null ? root.data : root
   ) as Record<string, unknown>;
 
-  const tokensObj = (
-    typeof nestedData.tokens === "object" && nestedData.tokens !== null
-      ? nestedData.tokens
-      : nestedData
-  ) as Record<string, unknown>;
+  const status = (pickString(nestedData, ["status"]) ??
+    pickString(root, ["status"]) ??
+    "AUTHENTICATED") as LoginStatus;
 
   const accessToken =
-    pickString(tokensObj, ["accessToken", "access_token", "token", "jwt"]) ??
     pickString(nestedData, ["accessToken", "access_token", "token", "jwt"]) ??
     pickString(root, ["accessToken", "access_token", "token", "jwt"]) ??
     "";
 
   const refreshToken =
-    pickString(tokensObj, ["refreshToken", "refresh_token"]) ??
     pickString(nestedData, ["refreshToken", "refresh_token"]) ??
     pickString(root, ["refreshToken", "refresh_token"]);
 
+  const sessionId =
+    pickString(nestedData, ["sessionId", "session_id"]) ??
+    pickString(root, ["sessionId", "session_id"]);
+
+  const rawExpires =
+    nestedData.sessionExpiresInSeconds ?? root.sessionExpiresInSeconds;
+  const sessionExpiresInSeconds =
+    typeof rawExpires === "number" && rawExpires > 0 ? rawExpires : undefined;
+
+  const userId =
+    pickString(nestedData, ["userId", "id", "_id", "adminId"]) ??
+    pickString(root, ["userId", "id", "_id", "adminId"]);
+
   const rawUser = (
-    (typeof nestedData.user === "object" && nestedData.user !== null && nestedData.user) ||
-    (typeof nestedData.admin === "object" && nestedData.admin !== null && nestedData.admin) ||
+    (typeof nestedData.user === "object" &&
+      nestedData.user !== null &&
+      nestedData.user) ||
+    (typeof nestedData.admin === "object" &&
+      nestedData.admin !== null &&
+      nestedData.admin) ||
     (typeof root.user === "object" && root.user !== null && root.user) ||
     (typeof root.admin === "object" && root.admin !== null && root.admin) ||
     nestedData
   ) as Record<string, unknown>;
 
-  const email = pickString(rawUser, ["email"]) ?? fallbackEmail;
+  const email = pickString(rawUser, ["email"]) ?? fallbackIdentifier;
   const firstName = pickString(rawUser, ["firstName", "first_name"]);
   const lastName = pickString(rawUser, ["lastName", "last_name"]);
   const fullNameFromParts = [firstName, lastName].filter(Boolean).join(" ");
-  const emailPrefix = email.split("@")[0] || "Admin";
+  const emailPrefix = email.includes("@")
+    ? email.split("@")[0] || "Admin"
+    : "Admin";
 
   const name =
     pickString(rawUser, ["name", "fullName", "full_name", "username"]) ||
@@ -71,7 +105,7 @@ function normalizeLoginResponse(raw: unknown, fallbackEmail: string): AuthSessio
     emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
 
   const user: AuthUser = {
-    id: pickString(rawUser, ["id", "_id", "userId", "adminId"]) ?? email,
+    id: userId ?? email,
     email,
     name,
     firstName,
@@ -81,15 +115,19 @@ function normalizeLoginResponse(raw: unknown, fallbackEmail: string): AuthSessio
   };
 
   return {
+    status,
     accessToken,
     refreshToken,
+    sessionId,
+    sessionExpiresInSeconds,
+    userId,
     user,
   };
 }
 
 /**
  * Server Action: Authenticates an admin against `POST https://api.racvest.xyz/auth/login`
- * using the shared Axios client and persists HttpOnly session cookies.
+ * Request Body: `{ identifier, password }`
  */
 export async function loginAction(input: LoginInput): Promise<AuthActionResult> {
   const parsed = loginInputSchema.safeParse(input);
@@ -110,14 +148,21 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
   }
 
   try {
-    const response = await apiClient.post(API_ENDPOINTS.auth.login, {
-      email: parsed.data.email,
-      password: parsed.data.password,
-    });
+    const response = await apiClient.post<LoginResponse>(
+      API_ENDPOINTS.auth.login,
+      {
+        identifier: parsed.data.identifier,
+        password: parsed.data.password,
+      }
+    );
 
-    const session = normalizeLoginResponse(response.data, parsed.data.email);
+    const session = normalizeLoginResponse(
+      response.data,
+      parsed.data.identifier
+    );
     const cookieStore = await cookies();
     const isProduction = process.env.NODE_ENV === "production";
+    const accessTokenMaxAge = session.sessionExpiresInSeconds ?? 60 * 60 * 24;
 
     if (session.accessToken) {
       cookieStore.set(AUTH_COOKIES.accessToken, session.accessToken, {
@@ -125,7 +170,7 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
         secure: isProduction,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 24, // 24 hours
+        maxAge: accessTokenMaxAge,
       });
     }
 
@@ -144,23 +189,18 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
       secure: isProduction,
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24,
+      maxAge: accessTokenMaxAge,
     });
-
-    const responseObj =
-      typeof response.data === "object" && response.data !== null
-        ? (response.data as Record<string, unknown>)
-        : {};
-    const apiMessage =
-      typeof responseObj.message === "string"
-        ? responseObj.message
-        : "Welcome back! Redirecting to operations portal...";
 
     return {
       success: true,
-      message: apiMessage,
+      status: session.status,
+      message: "Welcome back! Redirecting to operations portal...",
       user: session.user,
       accessToken: session.accessToken,
+      sessionId: session.sessionId,
+      sessionExpiresInSeconds: session.sessionExpiresInSeconds,
+      userId: session.userId,
     };
   } catch (err: unknown) {
     const apiError = parseApiError(err);
@@ -172,12 +212,67 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
 }
 
 /**
- * Server Action: Clears authentication cookies on logout
+ * Server Action: Clears authentication cookies and invalidates backend session on logout
  */
 export async function logoutAction(): Promise<{ success: boolean }> {
   const cookieStore = await cookies();
+  const accessToken = cookieStore.get(AUTH_COOKIES.accessToken)?.value;
+
+  if (accessToken) {
+    try {
+      await apiClient.post(
+        API_ENDPOINTS.auth.logout,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+    } catch {
+      // Proceed with clearing cookies even if backend logout fails or token expired
+    }
+  }
+
   cookieStore.delete(AUTH_COOKIES.accessToken);
   cookieStore.delete(AUTH_COOKIES.refreshToken);
   cookieStore.delete(AUTH_COOKIES.userSession);
   return { success: true };
+}
+
+/**
+ * Server helper: Reads the current authenticated admin session from cookies
+ */
+export async function getServerAuthSession(): Promise<{
+  accessToken: string | null;
+  user: AuthUser | null;
+}> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get(AUTH_COOKIES.accessToken)?.value ?? null;
+  const rawUser = cookieStore.get(AUTH_COOKIES.userSession)?.value;
+
+  if (!accessToken) {
+    return { accessToken: null, user: null };
+  }
+
+  if (rawUser) {
+    try {
+      const parsed = JSON.parse(rawUser) as AuthUser;
+      if (parsed && typeof parsed.email === "string") {
+        return { accessToken, user: parsed };
+      }
+    } catch {
+      // Fallback to default admin user object below
+    }
+  }
+
+  return {
+    accessToken,
+    user: {
+      id: "admin",
+      email: "admin@racvest.com",
+      name: "Admin",
+      role: "ADMIN",
+    },
+  };
 }

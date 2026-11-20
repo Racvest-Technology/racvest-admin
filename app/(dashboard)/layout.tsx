@@ -1,14 +1,24 @@
 import * as React from "react";
+import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import { AuthSessionSync, getServerAuthSession } from "@/features/auth";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { accessToken, user } = await getServerAuthSession();
+
+  if (!accessToken) {
+    redirect("/login");
+  }
+
   return (
     <div className="flex min-h-screen bg-[#F7F7F3]">
+      <AuthSessionSync serverUser={user} accessToken={accessToken} />
+
       {/* Sidebar */}
       <React.Suspense
         fallback={

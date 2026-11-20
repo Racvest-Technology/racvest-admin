@@ -38,4 +38,12 @@ export const API_ENDPOINTS = {
     logout: "/auth/logout",
     refresh: "/auth/refresh",
   },
+  invitations: {
+    list: "/invitations",
+    create: "/invitations",
+    accept: "/invitations/accept",
+    mine: "/invitations/me",
+    revoke: (id: string) => `/invitations/${id}/revoke`,
+    resend: (id: string) => `/invitations/${id}/resend`,
+  },
 } as const;

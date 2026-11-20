@@ -28,10 +28,10 @@ function LoginFormContent() {
   );
 
   const [showPassword, setShowPassword] = React.useState(false);
-  const [email, setEmail] = React.useState(() => emailParam);
+  const [identifier, setIdentifier] = React.useState(() => emailParam);
   const [password, setPassword] = React.useState("");
   const [fieldErrors, setFieldErrors] = React.useState<{
-    email?: string;
+    identifier?: string;
     password?: string;
   }>({});
   const [isLoading, setIsLoading] = React.useState(false);
@@ -40,12 +40,12 @@ function LoginFormContent() {
     e.preventDefault();
     setFieldErrors({});
 
-    const parsed = loginInputSchema.safeParse({ email, password });
+    const parsed = loginInputSchema.safeParse({ identifier, password });
     if (!parsed.success) {
-      const nextErrors: { email?: string; password?: string } = {};
+      const nextErrors: { identifier?: string; password?: string } = {};
       for (const issue of parsed.error.issues) {
         const key = issue.path[0];
-        if ((key === "email" || key === "password") && !nextErrors[key]) {
+        if ((key === "identifier" || key === "password") && !nextErrors[key]) {
           nextErrors[key] = issue.message;
         }
       }
@@ -95,34 +95,34 @@ function LoginFormContent() {
   return (
     <div className="w-full max-w-[360px] bg-white rounded-2xl p-6 sm:p-7 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#EBEBE4]">
       <form onSubmit={handleSignIn} className="space-y-4" noValidate>
-        {/* Email Address */}
+        {/* Email Address / Identifier */}
         <div className="space-y-1.5">
           <label
-            htmlFor="email"
+            htmlFor="identifier"
             className="block text-xs font-semibold text-[#171713]"
           >
             Email Address
           </label>
           <Input
-            id="email"
-            type="email"
+            id="identifier"
+            type="text"
             placeholder="Enter Email Address"
-            value={email}
+            value={identifier}
             onChange={(e) => {
-              setEmail(e.target.value);
-              if (fieldErrors.email) {
-                setFieldErrors((prev) => ({ ...prev, email: undefined }));
+              setIdentifier(e.target.value);
+              if (fieldErrors.identifier) {
+                setFieldErrors((prev) => ({ ...prev, identifier: undefined }));
               }
             }}
-            autoComplete="email"
+            autoComplete="username"
             disabled={isLoading}
             required
-            aria-invalid={Boolean(fieldErrors.email)}
+            aria-invalid={Boolean(fieldErrors.identifier)}
             className="h-10 text-xs sm:text-sm text-[#171713] placeholder:text-[#A7A79D] border-[#E3E3DC] rounded-lg px-3 focus-visible:ring-1 focus-visible:ring-[#014D21] focus-visible:border-[#014D21]"
           />
-          {fieldErrors.email && (
+          {fieldErrors.identifier && (
             <p className="text-[11px] font-medium text-[#EA3829]">
-              {fieldErrors.email}
+              {fieldErrors.identifier}
             </p>
           )}
         </div>
