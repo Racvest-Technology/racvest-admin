@@ -3,10 +3,10 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useQueryState, parseAsString } from "nuqs";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
@@ -14,7 +14,6 @@ import { loginAction, loginInputSchema } from "@/features/auth";
 import { useAuthStore } from "@/stores";
 
 function LoginFormContent() {
-  const router = useRouter();
   const setSession = useAuthStore((state) => state.setSession);
 
   // Nuqs URL query state: e.g. /login?callbackUrl=/deliveries&email=admin@racvest.xyz
@@ -56,10 +55,20 @@ function LoginFormContent() {
       return;
     }
 
+    const safeRedirect =
+      callbackUrl &&
+      callbackUrl.startsWith("/") &&
+      !callbackUrl.startsWith("/.well-known")
+        ? callbackUrl
+        : "/";
+
     setIsLoading(true);
     try {
-      const result = await loginAction(parsed.data);
+      // loginAction sets cookies then calls redirect() server-side.
+      // On success it never returns — the redirect error propagates here.
+      const result = await loginAction(parsed.data, safeRedirect);
 
+      // Only reachable on explicit { success: false } returns (error path).
       if (!result.success) {
         if (result.fieldErrors) {
           setFieldErrors(result.fieldErrors);
@@ -68,23 +77,19 @@ function LoginFormContent() {
         return;
       }
 
+      // Belt-and-suspenders: sync user into client store in case the server
+      // action returned without redirecting (should not happen in normal flow).
       if (result.user) {
         setSession(result.user, result.accessToken);
       }
 
-      const safeRedirect =
-        callbackUrl &&
-        callbackUrl.startsWith("/") &&
-        !callbackUrl.startsWith("/.well-known")
-          ? callbackUrl
-          : "/";
-
       toast.success(
         result.message ?? "Welcome back! Redirecting to operations portal..."
       );
-      router.push(safeRedirect);
-      router.refresh();
-    } catch {
+    } catch (err: unknown) {
+      // Next.js redirect() throws a special signal — re-throw it so the
+      // router picks it up and performs the navigation.
+      if (isRedirectError(err)) throw err;
       toast.error("Unable to complete sign in. Please try again.");
     } finally {
       setIsLoading(false);

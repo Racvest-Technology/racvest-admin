@@ -23,6 +23,7 @@ export const useAppStore = create<AppStore>()(
       name: "racvest-store",
       partialize: (state) => ({
         user: state.user,
+        accessToken: state.accessToken,
         isAuthenticated: state.isAuthenticated,
         sidebarOpen: state.sidebarOpen,
       }),

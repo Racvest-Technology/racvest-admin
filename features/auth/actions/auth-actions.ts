@@ -1,6 +1,8 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { apiClient, parseApiError } from "@/lib/api-client";
 import { API_ENDPOINTS, AUTH_COOKIES } from "@/config/constants";
 import {
@@ -128,8 +130,12 @@ function normalizeLoginResponse(
 /**
  * Server Action: Authenticates an admin against `POST https://api.racvest.xyz/auth/login`
  * Request Body: `{ identifier, password }`
+ * On success, commits auth cookies then performs a server-side redirect to `redirectTo`.
  */
-export async function loginAction(input: LoginInput): Promise<AuthActionResult> {
+export async function loginAction(
+  input: LoginInput,
+  redirectTo = "/"
+): Promise<AuthActionResult> {
   const parsed = loginInputSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -160,19 +166,56 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
       response.data,
       parsed.data.identifier
     );
+
     const cookieStore = await cookies();
     const isProduction = process.env.NODE_ENV === "production";
+    const mfaSessionMaxAge = session.sessionExpiresInSeconds ?? 300;
+
+    // ── Intermediate MFA / verification states ──────────────────────────────
+    // The backend issues a sessionId but no accessToken until the second factor
+    // is verified. Store the sessionId in a short-lived cookie and redirect.
+    if (
+      session.status === "MFA_ENROLLMENT_REQUIRED" ||
+      session.status === "MFA_REQUIRED" ||
+      session.status === "PHONE_VERIFICATION_REQUIRED"
+    ) {
+      if (session.sessionId) {
+        cookieStore.set(AUTH_COOKIES.mfaSession, session.sessionId, {
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: "lax",
+          path: "/",
+          maxAge: mfaSessionMaxAge,
+        });
+      }
+
+      const mfaRedirect =
+        session.status === "MFA_ENROLLMENT_REQUIRED"
+          ? "/mfa/enroll"
+          : session.status === "MFA_REQUIRED"
+            ? "/mfa/verify"
+            : "/verify-phone";
+
+      redirect(mfaRedirect);
+    }
+
+    // ── Fully authenticated ─────────────────────────────────────────────────
+    if (!session.accessToken) {
+      return {
+        success: false,
+        error: "Login failed: no session token was issued. Please try again.",
+      };
+    }
+
     const accessTokenMaxAge = session.sessionExpiresInSeconds ?? 60 * 60 * 24;
 
-    if (session.accessToken) {
-      cookieStore.set(AUTH_COOKIES.accessToken, session.accessToken, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: "lax",
-        path: "/",
-        maxAge: accessTokenMaxAge,
-      });
-    }
+    cookieStore.set(AUTH_COOKIES.accessToken, session.accessToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: "lax",
+      path: "/",
+      maxAge: accessTokenMaxAge,
+    });
 
     if (session.refreshToken) {
       cookieStore.set(AUTH_COOKIES.refreshToken, session.refreshToken, {
@@ -192,17 +235,12 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
       maxAge: accessTokenMaxAge,
     });
 
-    return {
-      success: true,
-      status: session.status,
-      message: "Welcome back! Redirecting to operations portal...",
-      user: session.user,
-      accessToken: session.accessToken,
-      sessionId: session.sessionId,
-      sessionExpiresInSeconds: session.sessionExpiresInSeconds,
-      userId: session.userId,
-    };
+    // All cookies committed — redirect to dashboard.
+    redirect(redirectTo);
   } catch (err: unknown) {
+    // Re-throw Next.js redirect signals — they must not be swallowed.
+    if (isRedirectError(err)) throw err;
+
     const apiError = parseApiError(err);
     return {
       success: false,
