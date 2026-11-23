@@ -220,3 +220,71 @@ export interface AuthActionResult {
   sessionExpiresInSeconds?: number;
   userId?: string;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MFA Enrollment — POST /auth/login/mfa/enroll/begin
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Response from POST /auth/login/mfa/enroll/begin */
+export interface MfaEnrollBeginResponse {
+  secret: string;
+  otpauthUri: string;
+}
+
+/** Server Action result for mfa enroll begin */
+export interface MfaEnrollBeginActionResult {
+  success: boolean;
+  secret?: string;
+  otpauthUri?: string;
+  error?: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MFA Enrollment Confirm — POST /auth/login/mfa/enroll/confirm
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Request body for POST /auth/login/mfa/enroll/confirm */
+export interface MfaEnrollConfirmInput {
+  sessionId: string;
+  code: string;
+}
+
+/** Response from POST /auth/login/mfa/enroll/confirm */
+export interface MfaEnrollConfirmResponse {
+  accessToken: string;
+  refreshToken: string;
+  recoveryCodes: string[];
+}
+
+/** Server Action result for mfa enroll confirm */
+export interface MfaEnrollConfirmActionResult {
+  success: boolean;
+  recoveryCodes?: string[];
+  error?: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MFA Verify (subsequent logins) — POST /auth/login/mfa
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Request body for POST /auth/login/mfa */
+export interface MfaVerifyInput {
+  sessionId: string;
+  code: string;
+}
+
+/** Response from POST /auth/login/mfa — same shape as AUTHENTICATED login */
+export interface MfaVerifyResponse {
+  status: LoginStatus;
+  accessToken: string;
+  refreshToken: string;
+  sessionId?: string;
+  sessionExpiresInSeconds?: number;
+  userId?: string;
+}
+
+/** Server Action result for mfa verify */
+export interface MfaVerifyActionResult {
+  success: boolean;
+  error?: string;
+}

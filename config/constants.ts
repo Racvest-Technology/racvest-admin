@@ -38,6 +38,9 @@ export const API_ENDPOINTS = {
     login: "/auth/login",
     logout: "/auth/logout",
     refresh: "/auth/refresh",
+    mfaEnrollBegin: "/auth/login/mfa/enroll/begin",
+    mfaEnrollConfirm: "/auth/login/mfa/enroll/confirm",
+    mfaVerify: "/auth/login/mfa",
   },
   invitations: {
     list: "/invitations",
