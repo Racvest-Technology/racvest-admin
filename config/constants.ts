@@ -31,6 +31,7 @@ export const AUTH_COOKIES = {
   refreshToken: "racvest_refresh_token",
   userSession: "racvest_admin_user",
   mfaSession: "racvest_mfa_session",
+  mfaIdentifier: "racvest_mfa_identifier",
 } as const;
 
 export const API_ENDPOINTS = {

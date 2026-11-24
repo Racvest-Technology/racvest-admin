@@ -58,7 +58,9 @@ function LoginFormContent() {
     const safeRedirect =
       callbackUrl &&
       callbackUrl.startsWith("/") &&
-      !callbackUrl.startsWith("/.well-known")
+      !callbackUrl.startsWith("/.well-known") &&
+      !callbackUrl.startsWith("/mfa") &&
+      !callbackUrl.startsWith("/login")
         ? callbackUrl
         : "/";
 

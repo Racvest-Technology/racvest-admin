@@ -8,9 +8,19 @@ import { AUTH_COOKIES } from "@/config/constants";
 const PUBLIC_PATHS = ["/login", "/forgot-password", "/invite/accept"];
 
 /**
+ * Intermediate MFA routes requiring an active mfaSession cookie
+ */
+const MFA_PATHS = ["/mfa/enroll", "/mfa/verify"];
+
+/**
  * Auth-only routes that authenticated admins should be redirected away from
  */
-const AUTH_ONLY_PATHS = ["/login", "/forgot-password"];
+const AUTH_ONLY_PATHS = [
+  "/login",
+  "/forgot-password",
+  "/mfa/enroll",
+  "/mfa/verify",
+];
 
 function matchesRoute(pathname: string, routes: string[]): boolean {
   return routes.some(
@@ -27,20 +37,14 @@ export function proxy(request: NextRequest) {
 
   const accessToken = request.cookies.get(AUTH_COOKIES.accessToken)?.value;
   const isAuthenticated = Boolean(accessToken && accessToken.trim().length > 0);
+  const mfaSession = request.cookies.get(AUTH_COOKIES.mfaSession)?.value;
+  const hasMfaSession = Boolean(mfaSession && mfaSession.trim().length > 0);
+
   const isPublicPath = matchesRoute(pathname, PUBLIC_PATHS);
+  const isMfaPath = matchesRoute(pathname, MFA_PATHS);
   const isAuthOnlyPath = matchesRoute(pathname, AUTH_ONLY_PATHS);
 
-  // 1. Unauthenticated visitor attempting to access any protected platform route
-  if (!isAuthenticated && !isPublicPath) {
-    const loginUrl = new URL("/login", request.url);
-    const fullPath = `${pathname}${search}`;
-    if (fullPath && fullPath !== "/") {
-      loginUrl.searchParams.set("callbackUrl", fullPath);
-    }
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // 2. Authenticated admin visiting /login or /forgot-password -> redirect to dashboard
+  // 1. Authenticated admin visiting auth/MFA routes -> redirect to dashboard
   if (isAuthenticated && isAuthOnlyPath) {
     const callbackUrl = request.nextUrl.searchParams.get("callbackUrl");
     const targetPath =
@@ -50,6 +54,25 @@ export function proxy(request: NextRequest) {
         ? callbackUrl
         : "/";
     return NextResponse.redirect(new URL(targetPath, request.url));
+  }
+
+  // 2. Intermediate MFA routes: allow if valid mfaSession cookie exists
+  if (isMfaPath) {
+    if (hasMfaSession) {
+      return NextResponse.next();
+    }
+    // No active MFA session -> redirect to login
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // 3. Unauthenticated visitor attempting to access any protected platform route
+  if (!isAuthenticated && !isPublicPath) {
+    const loginUrl = new URL("/login", request.url);
+    const fullPath = `${pathname}${search}`;
+    if (fullPath && fullPath !== "/" && !matchesRoute(pathname, AUTH_ONLY_PATHS)) {
+      loginUrl.searchParams.set("callbackUrl", fullPath);
+    }
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

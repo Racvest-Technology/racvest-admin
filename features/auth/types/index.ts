@@ -219,6 +219,8 @@ export interface AuthActionResult {
   sessionId?: string;
   sessionExpiresInSeconds?: number;
   userId?: string;
+  /** Client-side redirect path returned when MFA is required. */
+  redirectTo?: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

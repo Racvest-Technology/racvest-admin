@@ -224,8 +224,11 @@ export function MfaEnrollForm({ secret, otpauthUri }: MfaEnrollFormProps) {
 
         <Button
           type="button"
-          onClick={() => router.replace("/")}
-          className="w-full h-10 bg-[#014D21] hover:bg-[#01451E] active:bg-[#013A19] text-white font-semibold rounded-lg shadow-none text-sm"
+          onClick={() => {
+            router.replace("/");
+            router.refresh();
+          }}
+          className="w-full h-10 bg-[#014D21] hover:bg-[#01451E] active:bg-[#013A19] text-white font-semibold rounded-lg shadow-none text-sm cursor-pointer"
         >
           I&apos;ve Saved My Codes — Go to Dashboard
         </Button>

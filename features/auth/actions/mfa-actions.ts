@@ -12,7 +12,6 @@ import type {
   MfaEnrollConfirmResponse,
   MfaVerifyActionResult,
   MfaVerifyResponse,
-  AuthUser,
 } from "../types";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -53,16 +52,23 @@ async function commitAuthSession(
     maxAge: 60 * 60 * 24 * 7, // 7 days
   });
 
-  // Build a minimal user record from what we have — AuthSessionSync in the
-  // dashboard layout will re-hydrate the full profile from the cookie.
-  const minimalUser: AuthUser = {
-    id: userId ?? "admin",
-    email: "",
-    name: "Admin",
+  // Recover the email/identifier that was stored during the initial login step
+  // so the user record in the cookie is populated with real data.
+  const identifier = cookieStore.get(AUTH_COOKIES.mfaIdentifier)?.value ?? "";
+  const emailPrefix = identifier.includes("@")
+    ? identifier.split("@")[0] ?? "Admin"
+    : "Admin";
+  const displayName =
+    emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+
+  const user = {
+    id: userId ?? identifier,
+    email: identifier,
+    name: displayName,
     role: "ADMIN",
   };
 
-  cookieStore.set(AUTH_COOKIES.userSession, JSON.stringify(minimalUser), {
+  cookieStore.set(AUTH_COOKIES.userSession, JSON.stringify(user), {
     httpOnly: false,
     secure: isProduction,
     sameSite: "lax",
@@ -70,8 +76,9 @@ async function commitAuthSession(
     maxAge,
   });
 
-  // Clear the short-lived MFA session cookie.
+  // Clear the short-lived MFA session cookies.
   cookieStore.delete(AUTH_COOKIES.mfaSession);
+  cookieStore.delete(AUTH_COOKIES.mfaIdentifier);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

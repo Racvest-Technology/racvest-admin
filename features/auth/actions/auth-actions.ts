@@ -173,7 +173,8 @@ export async function loginAction(
 
     // ── Intermediate MFA / verification states ──────────────────────────────
     // The backend issues a sessionId but no accessToken until the second factor
-    // is verified. Store the sessionId in a short-lived cookie and redirect.
+    // is verified. Store the sessionId AND the identifier (email) in short-lived
+    // cookies so they're available after MFA completes to build the user record.
     if (
       session.status === "MFA_ENROLLMENT_REQUIRED" ||
       session.status === "MFA_REQUIRED" ||
@@ -188,6 +189,15 @@ export async function loginAction(
           maxAge: mfaSessionMaxAge,
         });
       }
+
+      // Persist the identifier so commitAuthSession can populate the user record.
+      cookieStore.set(AUTH_COOKIES.mfaIdentifier, parsed.data.identifier, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: "lax",
+        path: "/",
+        maxAge: mfaSessionMaxAge,
+      });
 
       const mfaRedirect =
         session.status === "MFA_ENROLLMENT_REQUIRED"
